@@ -23,6 +23,7 @@ Now attempt the **exercises** below.
 ---
 1. **Improve** this function so that all **valid** input (`y`,`Y`,`Yes`,`n`,`N`,`No` etc.) is accepted.
 2. **Ensure** that this function is being used in the main program to get value for `SampleGame`.
+
 ---
 
 ##Task 2 - Move Validation
