@@ -42,11 +42,23 @@ Attempt the **exercises** below.
 
 ---
 1. **Explain** what happens when a piece is moved off the **right-hand** edge of the board.
+>The program raises an IndexError, this is because it attempts to access the 9th (10th techihcally) item in the array, this doesn't exist so there's an error
+
 2. **Explain** what happens when a piece is move off the **left-hand** edge of the board.
+>The  program continues as normal, because in python the program doesn't use the 0th array index, it sets this as None. When you attempt to move a peice into the 0th rank or file, python assumes that this is normal, because of the non-standard way in which this program has been written. Therfore, according to this program as it stands, it is possible to move a piece off of the board and still have it in playh, it just won't be displayed.
+
 3. **Explain** what happens when a piece is moved off the **top** edge of the board.
+>See answer number 2
+
 4. **Explain** what happens when a piece is moved off the **bottom** edge of the board.
+>See answer number 1
+
 5. **Explain** any differences you encountered whilst attempting the above questions (1-4).
+>None, they were two dimentions of a 2d array, it operates in exactly the same way.
+
 6. **Identify** the function responsible for validating whether a move is acceptable or not.
+>`CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)`
+
 7. **Improve** the function identified in question 6 so that an appropriate message is displayed if the move is not valid. The user should then be prompted to reenter the co-ordinates of the move.
 
     This message might look like the following:
@@ -66,6 +78,8 @@ Attempt the **exercises** below.
 
 ---
 1. **Identify** the function responsible for getting the move from the user.
+> `GetMove()`
+
 2. **Improve** this function so that the start and end positions are validated separately. This means that an appropriate error message should be displayed as soon as invalid data has been entered:
 
     ![](images/rank_file_feedback.png)
@@ -100,6 +114,8 @@ Attempt the **exercises** below.
 
 ---
 1. **Describe** what is returned by the game when a position on the board containing a piece is selected e.g. `Board[4][3]` (if there where a piece in that position).
+>What is returned is a two character string containing the colour of the peice and the type of the piece, for example `WS` is a white sarrum
+
 2. **Create** a new function called `GetPieceName()` that takes the value identified in question 1 and returns the full name of **both** the **colour** and **type** of piece.
 3. **Identify** the function responsible for moving the pieces on the board.
 4. **Improve** the function identified in question 3 to make use of the new function `GetPieceName()` to present the user with a message similar to the one in the screenshot above.

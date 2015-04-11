@@ -29,6 +29,17 @@ def DisplayWhoseTurnItIs(WhoseTurn):
   else:
     print("It is Black's turn")
 
+def GetPieceName(Rank, File, Board):
+  ShortHandColour = Board[File][Rank][0]
+  EnglishColours = {"B":"Black", "W":"White", " ":""}
+  FullColour = EnglishColours[ShortHandColour]
+
+  PieceNames = {"S":"Sarrum", "E":"Eltu", "R":"Redum", "M":"Marzaz pani", "G":"Gisigir", "N":"Nabu", " ":"Empty"}
+  ShortHandName = Board[File][Rank][1]
+  FullName = PieceNames[ShortHandName]
+
+  return FullColour, FullName
+
 def GetTypeOfGame():
   choice = ''
   while choice not in ['yes', 'no', 'y', 'n']:
@@ -167,17 +178,26 @@ def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseT
   if (FinishFile == StartFile) and (FinishRank == StartRank):
     MoveIsLegal = False
   ##movement helps in making the move valid
+  ##If the player tries to move off of the board
+  elif not(0 < FinishFile < 9) or not( 0 < FinishRank < 9):
+    ## then it move is illegal.
+    MoveIsLegal = False
   else:
 
-    ## get the piece data from the arraay
+    ## get the piece data from the arraay of the target peices
     PieceType = Board[StartRank][StartFile][1]
     PieceColour = Board[StartRank][StartFile][0]
+    ## check whose turn it is
+    
     if WhoseTurn == "W":
+      ## the white's turn cannot move the other team's players
       if PieceColour != "W":
         MoveIsLegal = False
+      ## white pieces cannot move on top of other white peices
       if Board[FinishRank][FinishFile][0] == "W":
         MoveIsLegal = False
-    else:
+    else: ## in other words "if WhoseTurn == "B""
+      ## yeah, I don't get this bit, I should ask Adam
       if PieceColour != "B":
         MoveIsLegal = False
       if Board[FinishRank][FinishFile][0] == "B":
@@ -199,9 +219,11 @@ def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseT
 
 def InitialiseBoard(Board, SampleGame):
   if SampleGame == "Y":
+    ## create an empty board
     for RankNo in range(1, BOARDDIMENSION + 1):
       for FileNo in range(1, BOARDDIMENSION + 1):
         Board[RankNo][FileNo] = "  "
+    ## now add all the peices for the demo game
     Board[1][2] = "BG"
     Board[1][4] = "BS"
     Board[1][8] = "WG"
@@ -247,9 +269,57 @@ def InitialiseBoard(Board, SampleGame):
           Board[RankNo][FileNo] = "  "    
                     
 def GetMove(StartSquare, FinishSquare):
-  StartSquare = int(input("Enter coordinates of square containing piece to move (file first): "))
-  FinishSquare = int(input("Enter coordinates of square to move piece to (file first): "))
+  ## this is going to need validating isn't it?
+  Valid = False
+  while not Valid:
+    try:
+      StartSquare = int(input("Enter coordinates of square containing piece to move (file first): "))
+      if not (10 < StartSquare < 89):
+        print("Please enter both the rank and file")
+      else:
+        Valid = True
+    except ValueError:
+      print("Please enter some valid data")
+  Valid = False
+  while not Valid:
+    try:
+      FinishSquare = int(input("Enter coordinates of square to move piece to (file first): "))
+      if not (10 < FinishSquare < 89):
+        print("Please enter a valid input")
+      else:
+        Valid = True
+    except ValueError:
+      print("Please enter some valid data")
+      
   return StartSquare, FinishSquare
+
+def ConfirmMove(StartSquare, FinishSquare, board): ## Boolean function
+  StartCoords = (StartSquare//10, StartSquare%10)
+  EndCoords = (FinishSquare//10, FinishSquare%10)
+  #PieceAtTheStart = board[StartCoords[0]][StartCoords[1]]
+  PieceAtTheStartColour, PieceAtTheStartName = GetPieceName(StartCoords[0], StartCoords[1], board)
+  PieceAtTheFinishColour, PieceAtTheFinishName = GetPieceName(EndCoords[0], EndCoords[1], board)
+  
+  
+  print("Are you sure you want to move the {1} in {0} to the {2} in {3}".format(StartCoords, PieceAtTheStartColour+" "+PieceAtTheStartName,
+                                                                                PieceAtTheFinishColour+" "+PieceAtTheFinishName, EndCoords))
+  ## String Formatting:
+  ##    0: Startcoords
+  ##    1: The type and colour of the piece in that square
+  ##    2: Endcoords
+  ##    3: The type and colour of the piece in that square (If applicable)
+
+  Response = input("Enter Y or N").lower()
+  while Response not in ["yes", "y", "n", "no"]:
+    Response= input("Please enter something valid").lower()
+
+  if Response == "y":
+    print("Move confirmed")
+    return True
+  else:
+    print("Move cancelled")
+    return False
+        
 
 def MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
   if WhoseTurn == "W" and FinishRank == 1 and Board[StartRank][StartFile][1] == "R":
@@ -264,38 +334,60 @@ def MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
 
     
 if __name__ == "__main__":
-  Board = CreateBoard() #0th index not used
+  Board = CreateBoard() #0th index not used (little bitch)
   StartSquare = 0 
   FinishSquare = 0
   PlayAgain = "Y"
   while PlayAgain == "Y":
+    ## Do you want to play a game?
     WhoseTurn = "W"
     GameOver = False
+    ## uses my nicely validated function
     SampleGame = GetTypeOfGame()
+    ## rather than doing `IF SampleGame == "y"`etc, they have decided to do something stupid
     if ord(SampleGame) >= 97 and ord(SampleGame) <= 122:
       SampleGame = chr(ord(SampleGame) - 32)
+    ## just why? it doesn't do anything actually uesful, it's just bad
+    
+    ## get this party started
     InitialiseBoard(Board, SampleGame)
+
+    ## keep going until the fat lady sings
     while not(GameOver):
+      ## NB: This is effectively the start of the turn, this is where I should impliment the `check` function
       DisplayBoard(Board)
       DisplayWhoseTurnItIs(WhoseTurn)
       MoveIsLegal = False
       while not(MoveIsLegal):
+        ## WTF is going on here?
         StartSquare, FinishSquare = GetMove(StartSquare, FinishSquare)
         StartRank = StartSquare % 10
         StartFile = StartSquare // 10
         FinishRank = FinishSquare % 10
         FinishFile = FinishSquare // 10
+        ## okay, so rather than dealing with strings, they have chosen to work out which
+        ## character is which mathematically
+        ## again, not a logical choice? Anyone could just put in any number and break it
+        
         MoveIsLegal = CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
         if not(MoveIsLegal):
           print("That is not a legal move - please try again")
+
+      
       GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
-      MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+      if ConfirmMove(StartSquare, FinishSquare, Board):
+        MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
       if GameOver:
         DisplayWinner(WhoseTurn)
+
+      ## swap it's now the other player's turn
       if WhoseTurn == "W":
         WhoseTurn = "B"
       else:
         WhoseTurn = "W"
+
+      ## this could be done really easily if the turn was kept track of using a bool - the statement could be `WhoseTurn = (not WhoseTurn)`
+      
     PlayAgain = input("Do you want to play again (enter Y for Yes)? ")
     if ord(PlayAgain) >= 97 and ord(PlayAgain) <= 122:
       PlayAgain = chr(ord(PlayAgain) - 32)
