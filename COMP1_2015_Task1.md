@@ -118,6 +118,8 @@ Attempt the **exercises** below.
 
 2. **Create** a new function called `GetPieceName()` that takes the value identified in question 1 and returns the full name of **both** the **colour** and **type** of piece.
 3. **Identify** the function responsible for moving the pieces on the board.
+>`MakeMove()`
+
 4. **Improve** the function identified in question 3 to make use of the new function `GetPieceName()` to present the user with a message similar to the one in the screenshot above.
 
 ---
@@ -133,6 +135,8 @@ Attempt the **exercises** below.
 
 ---
 1. **Identify** the function where the **Redum** is promoted to the **marzaz Pani**.
+>`MakeMove()` 
+
 2. **Improve** the function identified in question one so that an appropriate message is displayed when the Redum piece is promoted.
 
 ---
@@ -157,6 +161,16 @@ Section B of the COMP1 exam focuses on your understanding of the program source 
 
 ---
 1. Describe each variable role in **your own words**.
+
+| Role | Explaination |
+|:------:|--------|
+| Fixed Value | The role of a fixed value variable, or constant is to give a name to a number, so to help with code comprehension and to make it easier to debug. The value doesn't change although it can be used in expressions.|
+| Stepper | The role of a stepper is for, once in each iteration, it changes by a regular amount. An example is a variable to keep track of iteration.|
+|Most Recent Holder| Used to hold the latest value in a series of unpredictable data, an example unpredictable data being user input data|
+|Gatherer|A variable containing related and important data, when compared to the main data, for example keeping a running total of the numbers which have been added|
+|Transformation|A varible that is used to store the results of a fixed calculation|
+|Follower|A variable that takes the value of other data before that other data is changed.|
+|Tempory|A variable that holds a value for not imediate but soon-after use, for example when swapping two variables in bubblesort|
 2. Give an example of variable from the program code for each variable role (if possible).
 
 ---
@@ -179,7 +193,27 @@ The AS textbook has a good section on passing by value and passing by reference 
 
 ---
 1. Describe the difference between passing by value and passing by reference in **your own words**.
+>Passing by value gives the function the actual data, the contents of the variable; wheras passing by reference gives the function the memory address of the variable so it can access it directly. 
+
 2. For each function in the program identify the mechanism using to pass each parameter. **Note**: this task will take a while but it will improve your understanding of the program and by useful for the exam.
+
+| Function | Arg1 | Arg1 type| Arg2 | Arg2 Type| Arg3| Arg3 Type|
+|--------|--------|----------|------|----------|-----|----------|
+|DisplayWhoseTurnItIs|WhoseTurn|val|x|x|x|x|
+|GetPeiceName|Rank|val|File|val|Board|ref|
+|DisplayWinner|WhoseTurn|val|x|x|x|x|
+|CheckIfGameWillBeWon|Board|ref|FinishRank|val|FinishFile|val|
+|DisplayBoard|Board|ref|x|x|x|x|x|
+|CheckRedumMoveIsLegal|Board|ref|All else|val|x|x|
+|CheckSarrumMoveIsLegal|Board|ref|All else|val|x|x|
+|CheckGisigirMoveIsLegal|Board|ref|All else|val|x|x|
+|CheckNabuMoveIsLegal|Board|ref|All else|val|x|x|
+|CheckEltuMoveIsLegal|Board|ref|All else|val|x|x|
+|CheckMarzazpaniMoveIsLegal|Board|ref|All else|val|x|x|
+|CheckMoveIsLegal|Board|ref| All else|val|x|x|
+|InitializeBoard|Board|ref|SampleGame|val|x|x|
+|GetMove|StartSquare|val|FinishSquare|val|x|x|
+|ConfirmMove|StartSquare|val|FinishSquare|val|board|ref|
 
 ---
 

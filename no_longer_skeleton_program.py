@@ -68,14 +68,14 @@ def CheckIfGameWillBeWon(Board, FinishRank, FinishFile):
 def DisplayBoard(Board):
   print()
   for RankNo in range(1, BOARDDIMENSION + 1):
-    print("     _______________________")
-    print(RankNo, end="   ")
+    print("    -------------------------")
+    print("R{0}".format(RankNo), end="  ")
     for FileNo in range(1, BOARDDIMENSION + 1):
-      print("|" + Board[RankNo][FileNo], end="")
-    print("|")
-  print("     _______________________")
-  print()
-  print("      1  2  3  4  5  6  7  8")
+      print("│" + Board[RankNo][FileNo], end="")
+    print("│")
+  print("    -------------------------")
+  #print()
+  print("     F1 F2 F3 F4 F5 F6 F7 F8")
   print()
   print()    
 
@@ -323,12 +323,20 @@ def ConfirmMove(StartSquare, FinishSquare, board): ## Boolean function
 
 def MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
   if WhoseTurn == "W" and FinishRank == 1 and Board[StartRank][StartFile][1] == "R":
+    ## White Redum becomes a Marzaz Pani
     Board[FinishRank][FinishFile] = "WM"
     Board[StartRank][StartFile] = "  "
+    print("White Redum Promoted")
   elif WhoseTurn == "B" and FinishRank == 8 and Board[StartRank][StartFile][1] == "R":
+    ## Black Redum becomes a Marzaz Pani
     Board[FinishRank][FinishFile] = "BM"
     Board[StartRank][StartFile] = "  "
+    print("Black Redum Promoted")
   else:
+    ##Enrty point for the code to inform the user what piece they've just taken
+    PieceColour, PieceType = GetPieceName(FinishRank, FinishFile, Board)
+    print("You've just taken a {0} {1}".format(PieceColour, PieceType))
+    ## This code swaps the pieces around
     Board[FinishRank][FinishFile] = Board[StartRank][StartFile]
     Board[StartRank][StartFile] = "  "
 
