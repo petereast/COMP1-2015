@@ -30,6 +30,9 @@ def DisplayWhoseTurnItIs(WhoseTurn):
     print("It is Black's turn")
 
 def GetPieceName(Rank, File, Board):
+  
+  print("[DEBUG]", Rank, File, '"'+Board[Rank][File]+'"')
+  
   ShortHandColour = Board[File][Rank][0]
   EnglishColours = {"B":"Black", "W":"White", " ":""}
   FullColour = EnglishColours[ShortHandColour]
@@ -44,6 +47,8 @@ def GetTypeOfGame():
   choice = ''
   while choice not in ['yes', 'no', 'y', 'n']:
     choice = input("Do you want to play the sample game (enter Y for Yes)? ").lower()
+    if choice not in ['yes', 'no', 'y', 'n']:
+      print("That's not a valid input, you've got to try again")
 
   ## the first character of the choice will be what the program is expecting, and from what I can make out it is also in uppercase.
   TypeOfGame = choice[0].upper()
@@ -68,12 +73,12 @@ def CheckIfGameWillBeWon(Board, FinishRank, FinishFile):
 def DisplayBoard(Board):
   print()
   for RankNo in range(1, BOARDDIMENSION + 1):
-    print("    -------------------------")
+    print("    +--+--+--+--+--+--+--+--+")
     print("R{0}".format(RankNo), end="  ")
     for FileNo in range(1, BOARDDIMENSION + 1):
       print("│" + Board[RankNo][FileNo], end="")
     print("│")
-  print("    -------------------------")
+  print("    +--+--+--+--+--+--+--+--+")
   #print()
   print("     F1 F2 F3 F4 F5 F6 F7 F8")
   print()
@@ -197,7 +202,7 @@ def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseT
       if Board[FinishRank][FinishFile][0] == "W":
         MoveIsLegal = False
     else: ## in other words "if WhoseTurn == "B""
-      ## yeah, I don't get this bit, I should ask Adam
+      
       if PieceColour != "B":
         MoveIsLegal = False
       if Board[FinishRank][FinishFile][0] == "B":
@@ -333,16 +338,21 @@ def MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
     Board[StartRank][StartFile] = "  "
     print("Black Redum Promoted")
   else:
+    DisplayBoard(Board)
     ##Enrty point for the code to inform the user what piece they've just taken
     PieceColour, PieceType = GetPieceName(FinishRank, FinishFile, Board)
+    print("[DEBUG]", '"'+Board[FinishRank][FinishFile]+'"')
+    #if Board[FinishFile][FinishRank] != "  ":
     print("You've just taken a {0} {1}".format(PieceColour, PieceType))
     ## This code swaps the pieces around
     Board[FinishRank][FinishFile] = Board[StartRank][StartFile]
     Board[StartRank][StartFile] = "  "
 
     
+
+    
 if __name__ == "__main__":
-  Board = CreateBoard() #0th index not used (little bitch)
+  Board = CreateBoard() #0th index not used
   StartSquare = 0 
   FinishSquare = 0
   PlayAgain = "Y"
@@ -367,7 +377,7 @@ if __name__ == "__main__":
       DisplayWhoseTurnItIs(WhoseTurn)
       MoveIsLegal = False
       while not(MoveIsLegal):
-        ## WTF is going on here?
+        
         StartSquare, FinishSquare = GetMove(StartSquare, FinishSquare)
         StartRank = StartSquare % 10
         StartFile = StartSquare // 10
@@ -383,16 +393,19 @@ if __name__ == "__main__":
 
       
       GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
-      if ConfirmMove(StartSquare, FinishSquare, Board):
+      MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)
+      if MoveConfirm:
         MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
       if GameOver:
         DisplayWinner(WhoseTurn)
 
       ## swap it's now the other player's turn
-      if WhoseTurn == "W":
+      if WhoseTurn == "W" and MoveConfirm:
         WhoseTurn = "B"
-      else:
+      elif WhoseTurn != "W" and MoveConfirm:
         WhoseTurn = "W"
+      ##else (if MoveConfirm is false)
+        ## Allow the player to continue their turn
 
       ## this could be done really easily if the turn was kept track of using a bool - the statement could be `WhoseTurn = (not WhoseTurn)`
       
