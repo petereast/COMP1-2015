@@ -162,15 +162,15 @@ Section B of the COMP1 exam focuses on your understanding of the program source 
 ---
 1. Describe each variable role in **your own words**.
 
-| Role | Explaination |
-|:------:|--------|
-| Fixed Value | The role of a fixed value variable, or constant is to give a name to a number, so to help with code comprehension and to make it easier to debug. The value doesn't change although it can be used in expressions.|
-| Stepper | The role of a stepper is for, once in each iteration, it changes by a regular amount. An example is a variable to keep track of iteration.|
-|Most Recent Holder| Used to hold the latest value in a series of unpredictable data, an example unpredictable data being user input data|
-|Gatherer|A variable containing related and important data, when compared to the main data, for example keeping a running total of the numbers which have been added|
-|Transformation|A varible that is used to store the results of a fixed calculation|
+| Role | Explaination |Example|
+|:------:|--------|----|
+| Fixed Value | The role of a fixed value variable, or constant is to give a name to a number, so to help with code comprehension and to make it easier to debug. The value doesn't change although it can be used in expressions.| BOARDDIMENTION|
+| Stepper | The role of a stepper is for, once in each iteration, it changes by a regular amount. An example is a variable to keep track of iteration.|Count|
+|Most Recent Holder| Used to hold the latest value in a series of unpredictable data, an example unpredictable data being user input data|choice|
+|Gatherer|A variable containing related and important data, when compared to the main data, for example keeping a running total of the numbers which have been added|WhoseTurn|
+|Transformation|A varible that is used to store the results of a fixed calculation|FileDifference|
 |Follower|A variable that takes the value of other data before that other data is changed.|
-|Tempory|A variable that holds a value for not imediate but soon-after use, for example when swapping two variables in bubblesort|
+|Tempory|A variable that holds a value for not imediate but soon-after use, for example when swapping two variables in bubblesort|MoveConfirm|
 2. Give an example of variable from the program code for each variable role (if possible).
 
 ---
@@ -203,7 +203,7 @@ The AS textbook has a good section on passing by value and passing by reference 
 |GetPeiceName|Rank|val|File|val|Board|ref|
 |DisplayWinner|WhoseTurn|val|x|x|x|x|
 |CheckIfGameWillBeWon|Board|ref|FinishRank|val|FinishFile|val|
-|DisplayBoard|Board|ref|x|x|x|x|x|
+|DisplayBoard|Board|ref|x|x|x|x|
 |CheckRedumMoveIsLegal|Board|ref|All else|val|x|x|
 |CheckSarrumMoveIsLegal|Board|ref|All else|val|x|x|
 |CheckGisigirMoveIsLegal|Board|ref|All else|val|x|x|
