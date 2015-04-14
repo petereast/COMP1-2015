@@ -548,10 +548,7 @@ if __name__ == "__main__":
       DisplayWhoseTurnItIs(WhoseTurn)
       MoveIsLegal = False
       while not(MoveIsLegal):
-#<<<<<<< HEAD
-#=======
-        
-#>>>>>>> 54e2c3efd72dcdabf98f72752e0fcbc791264e79
+
         StartSquare, FinishSquare = GetMove(StartSquare, FinishSquare)
         StartRank = StartSquare % 10
         StartFile = StartSquare // 10
@@ -568,11 +565,11 @@ if __name__ == "__main__":
       
       GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
       isCheck = CheckSarrumInCheck(Board, FinishRank, FinishFile, WhoseTurn)
-      if isCheck:
-          CheckMessage(WhoseTurn)
       MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)
       if MoveConfirm:
         MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+      if isCheck:
+        CheckMessage(WhoseTurn)
       if GameOver:
         DisplayWinner(WhoseTurn)
 
