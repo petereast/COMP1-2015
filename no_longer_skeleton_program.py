@@ -177,7 +177,7 @@ def CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
     CheckEtluMoveIsLegal = True
   return CheckEtluMoveIsLegal
 
-def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
+ def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
   MoveIsLegal = True
 
   
@@ -365,7 +365,6 @@ def CheckSarrumInCheck(Board, FinishRank, FinishFile, WhoseTurn):
         for File in range(1, BOARDDIMENTION + 1):
             if Board[Rank][File] != "  " and Board[Rank][File][0] != opponent and not IsInCheck:
                 ThisPiece = Board[Rank][File]
-                print("CHECKED {0} this piece".format(ThisPiece))
                 if ThisPiece[1] == "R":
                     IsInCheck = CheckWithRedum(Board, Rank, File, WhoseTurn)
                     break
