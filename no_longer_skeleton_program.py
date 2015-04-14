@@ -31,7 +31,7 @@ def DisplayWhoseTurnItIs(WhoseTurn):
 
 def GetPieceName(Rank, File, Board):
   
-  print("[DEBUG]", Rank, File, '"'+Board[Rank][File]+'"')
+  ### print("[DEBUG]", Rank, File, '"'+Board[Rank][File]+'"')
   
   ShortHandColour = Board[File][Rank][0]
   EnglishColours = {"B":"Black", "W":"White", " ":""}
@@ -225,11 +225,11 @@ def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseT
 def CheckWithRedum(Board, FinishRank, FinishFile, WhoseTurn):
     WhiteTurn = WhoseTurn == "W"
     InCheck = False
-    if Board[FinishRank+1][FinishFile+1] == "WS" and not WhiteTurn:
+    if Board[(FinishRank+1)%len(Board)][(FinishFile+1)%len(Board)] == "WS" and not WhiteTurn:
         InCheck = True
     elif Board[FinishRank+1][FinishFile-1] == "WS" and not WhiteTurn:
         InCheck = True
-    elif Board[FinishRank+1][FinishFile+1] == "BS" and WhiteTurn:
+    elif Board[(FinishRank+1)%len(Board)][(FinishFile+1)%len(Board)] == "BS" and WhiteTurn:
         InCheck = True
     elif Board[FinishRank+1][FinishFile-1] == "BS" and WhiteTurn:
         InCheck = True
@@ -276,7 +276,7 @@ def CheckWithMarzazPani(Board, FinishRank, FinishFile, WhoseTurn):
 
     return InCheck
 
-def CheckWithEtlu(Board, FinishRank, FinishFile, WhoseTurn):
+def CheckWithEltu(Board, FinishRank, FinishFile, WhoseTurn):
     WhiteTurn = WhoseTurn == "W"
     if not WhiteTurn:
         opponent = "W"
@@ -307,6 +307,8 @@ def CheckWithGisgigir(Board, FinishRank, FinishFile, WhoseTurn):
 
     InCheck = False
 
+    print(opponent+"S")
+
     ##in x axis, from the piece's position to the right hand side
     for FileCount in range(FinishFile, 9): ##the range function is not inclusive
         if Board[FinishRank][FileCount] == "  ":
@@ -322,9 +324,9 @@ def CheckWithGisgigir(Board, FinishRank, FinishFile, WhoseTurn):
             continue
         elif Board[FinishRank][FileCount] == opponent+"S":
             InCheck = True
-            break
+            return InCheck
         else:
-            break
+          break
     ## in the y axis, from up to down
     for RankCount in range(FinishRank, 9): ##the range function is not inclusive
         if Board[RankCount][FinishFile] == "  ":
@@ -359,8 +361,9 @@ def CheckSarrumInCheck(Board, FinishRank, FinishFile, WhoseTurn):
     ## Linear search the heck out of the board, evaluate the moves of the other pieces
     for Rank in range(1, BOARDDIMENTION + 1):
         for File in range(1, BOARDDIMENTION + 1):
-            if Board[Rank][File] != "  " and Board[Rank][File][0] == opponent and not IsInCheck:
+            if Board[Rank][File] != "  " and Board[Rank][File][0] != opponent and not IsInCheck:
                 ThisPiece = Board[Rank][File]
+                print("CHECKED {0} this piece".format(ThisPiece))
                 if ThisPiece[1] == "R":
                     IsInCheck = CheckWithRedum(Board, Rank, File, WhoseTurn)
                     break
@@ -370,10 +373,10 @@ def CheckSarrumInCheck(Board, FinishRank, FinishFile, WhoseTurn):
                 elif ThisPiece[1] == "E":
                     IsInCheck = CheckWithEltu(Board, Rank, File, WhoseTurn)
                     break
-                elif ThisPeice[1] == "G":
+                elif ThisPiece[1] == "G":
                     IsInCheck = CheckWithGisgigir(Board, Rank, File, WhoseTurn)
                     break
-                elif ThisPeice[1] == "M":
+                elif ThisPiece[1] == "M":
                     IsInCheck = CheckWithMarzazPani(Board, Rank, File, WhoseTurn)
     return IsInCheck
 
@@ -508,10 +511,10 @@ def MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
     Board[StartRank][StartFile] = "  "
     print("Black Redum Promoted")
   else:
-    DisplayBoard(Board)
+    ###DisplayBoard(Board)
     ##Enrty point for the code to inform the user what piece they've just taken
     PieceColour, PieceType = GetPieceName(FinishRank, FinishFile, Board)
-    print("[DEBUG]", '"'+Board[FinishRank][FinishFile]+'"')
+    ###print("[DEBUG]", '"'+Board[FinishRank][FinishFile]+'"')
     #if Board[FinishFile][FinishRank] != "  ":
     print("You've just taken a {0} {1}".format(PieceColour, PieceType))
     ## This code swaps the pieces around
@@ -547,10 +550,10 @@ if __name__ == "__main__":
       DisplayWhoseTurnItIs(WhoseTurn)
       MoveIsLegal = False
       while not(MoveIsLegal):
-<<<<<<< HEAD
-=======
+#<<<<<<< HEAD
+#=======
         
->>>>>>> 54e2c3efd72dcdabf98f72752e0fcbc791264e79
+#>>>>>>> 54e2c3efd72dcdabf98f72752e0fcbc791264e79
         StartSquare, FinishSquare = GetMove(StartSquare, FinishSquare)
         StartRank = StartSquare % 10
         StartFile = StartSquare // 10
@@ -566,15 +569,11 @@ if __name__ == "__main__":
 
       
       GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
-<<<<<<< HEAD
       isCheck = CheckSarrumInCheck(Board, FinishRank, FinishFile, WhoseTurn)
       if isCheck:
           CheckMessage(WhoseTurn)
-      if ConfirmMove(StartSquare, FinishSquare, Board):
-=======
       MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)
       if MoveConfirm:
->>>>>>> 54e2c3efd72dcdabf98f72752e0fcbc791264e79
         MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
       if GameOver:
         DisplayWinner(WhoseTurn)
