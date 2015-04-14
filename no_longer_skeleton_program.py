@@ -217,6 +217,176 @@ def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseT
         MoveIsLegal = CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)
   return MoveIsLegal
 
+def CheckWithRedum(Board, FinishRank, FinishFile, WhoseTurn):
+    WhiteTurn = WhoseTurn == "W"
+    InCheck = False
+    if Board[FinishRank+1][FinishFile+1] == "WS" and not WhiteTurn:
+        InCheck = True
+    elif Board[FinishRank+1][FinishFile-1] == "WS" and not WhiteTurn:
+        InCheck = True
+    elif Board[FinishRank+1][FinishFile+1] == "BS" and WhiteTurn:
+        InCheck = True
+    elif Board[FinishRank+1][FinishFile-1] == "BS" and WhiteTurn:
+        InCheck = True
+    return InCheck
+
+def CheckWithNabu(Board, FinishRank, FinishFile, WhoseTurn):
+    WhiteTurn = WhoseTurn == "W"
+    if not WhiteTurn:
+        opponent = "W"
+    else:
+        opponent = "B"
+
+    InCheck = False
+
+    if Board[FinishRank+1][FinishFile+1] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank+1][FinishFile-1] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank-1][FinishFile+1] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank-1][FinishFile+1] == opponent+"S":
+        InCheck = True
+
+    return InCheck
+    
+
+def CheckWithMarzazPani(Board, FinishRank, FinishFile, WhoseTurn):
+    WhiteTurn = WhoseTurn == "W"
+    if not WhiteTurn:
+        opponent = "W"
+    else:
+        opponent = "B"
+
+    InCheck = False
+
+    if Board[FinishRank][FinishFile+1] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank][FinishFile-1] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank+1][FinishFile] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank-1][FinishFile] == opponent+"S":
+        InCheck = True
+
+    return InCheck
+
+def CheckWithEtlu(Board, FinishRank, FinishFile, WhoseTurn):
+    WhiteTurn = WhoseTurn == "W"
+    if not WhiteTurn:
+        opponent = "W"
+    else:
+        opponent = "B"
+
+    InCheck = False
+
+    if Board[FinishRank+2][FinishFile] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank-2][FinishFile] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank][FinishFile+2] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank][FinishFile-2] == opponent+"S":
+        InCheck = True
+
+    return InCheck
+
+def CheckWithGisgigir(Board, FinishRank, FinishFile, WhoseTurn):
+    WhiteTurn = WhoseTurn == "W"
+    if not WhiteTurn:
+        opponent = "W"
+    else:
+        opponent = "B"
+    ## loop through each direction, stopping when a peice is found
+    ## then check if that piece is an enemy sarrum
+
+    InCheck = False
+
+    ##in x axis, from the piece's position to the right hand side
+    for FileCount in range(FinishFile, 9): ##the range function is not inclusive
+        if Board[FinishRank][FileCount] == "  ":
+            continue
+        elif Board[FinishRank][FileCount] == opponent+"S":
+            InCheck = True
+            break
+        else:
+            break
+    ## in x axis, from left to right.
+    for FileCount in range(FinishFile, 0, -1): ##the range function is not inclusive
+        if Board[FinishRank][FileCount] == "  ":
+            continue
+        elif Board[FinishRank][FileCount] == opponent+"S":
+            InCheck = True
+            break
+        else:
+            break
+    ## in the y axis, from up to down
+    for RankCount in range(FinishRank, 9): ##the range function is not inclusive
+        if Board[RankCount][FinishFile] == "  ":
+            continue
+        elif Board[RankCount][FinishFile] == opponent+"S":
+            InCheck = True
+            break
+        else:
+            break
+    ##in y axis, from the other way
+    for RankCount in range(0, FinishRank, -1): ##the range function is not inclusive
+        if Board[RankCount][FileCount] == "  ":
+            continue
+        elif Board[FinishRank][FileCount] == opponent+"S":
+            InCheck = True
+            break
+        else:
+            break
+    
+    return InCheck
+
+def CheckSarrumInCheck(Board, FinishRank, FinishFile, WhoseTurn):
+    BOARDDIMENTION = 8
+    WhiteTurn = WhoseTurn == "W"
+    if not WhiteTurn:
+        opponent = "W"
+    else:
+        opponent = "B"
+
+    IsInCheck = False
+        
+    ## Linear search the heck out of the board, evaluate the moves of the other pieces
+    for Rank in range(1, BOARDDIMENTION + 1):
+        for File in range(1, BOARDDIMENTION + 1):
+            if Board[Rank][File] != "  " and Board[Rank][File][0] == opponent and not IsInCheck:
+                ThisPiece = Board[Rank][File]
+                if ThisPiece[1] == "R":
+                    IsInCheck = CheckWithRedum(Board, Rank, File, WhoseTurn)
+                    break
+                elif ThisPiece[1] == "N":
+                    IsInCheck = CheckWithNabu(Board, Rank, File, WhoseTurn)
+                    break
+                elif ThisPiece[1] == "E":
+                    IsInCheck = CheckWithEltu(Board, Rank, File, WhoseTurn)
+                    break
+                elif ThisPeice[1] == "G":
+                    IsInCheck = CheckWithGisgigir(Board, Rank, File, WhoseTurn)
+                    break
+                elif ThisPeice[1] == "M":
+                    IsInCheck = CheckWithMarzazPani(Board, Rank, File, WhoseTurn)
+    return IsInCheck
+
+def CheckMessage(WhoseTurn):
+    if WhoseTurn == "B":
+        print("The White Sarrum is in Check")
+    else:
+        print("The Black Sarrum is in Check")
+    
+
+
+def GetValidBoardPosition(rank, file):
+    ## invalid board position? I'm not entirely sure what the question asks
+    if not(0 < rank < 9) and not(0 < file < 9):
+        return False
+    else:
+        return True
+
 def InitialiseBoard(Board, SampleGame):
   if SampleGame == "Y":
     ## create an empty board
@@ -367,7 +537,6 @@ if __name__ == "__main__":
       DisplayWhoseTurnItIs(WhoseTurn)
       MoveIsLegal = False
       while not(MoveIsLegal):
-        ## WTF is going on here?
         StartSquare, FinishSquare = GetMove(StartSquare, FinishSquare)
         StartRank = StartSquare % 10
         StartFile = StartSquare // 10
@@ -383,6 +552,9 @@ if __name__ == "__main__":
 
       
       GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
+      isCheck = CheckSarrumInCheck(Board, FinishRank, FinishFile, WhoseTurn)
+      if isCheck:
+          CheckMessage(WhoseTurn)
       if ConfirmMove(StartSquare, FinishSquare, Board):
         MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
       if GameOver:

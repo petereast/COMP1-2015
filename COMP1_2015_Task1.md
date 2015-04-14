@@ -214,7 +214,7 @@ The AS textbook has a good section on passing by value and passing by reference 
 |InitializeBoard|Board|ref|SampleGame|val|x|x|
 |GetMove|StartSquare|val|FinishSquare|val|x|x|
 |ConfirmMove|StartSquare|val|FinishSquare|val|board|ref|
-|MakeMove|Board|ref|all else|val|x|x|
+|MakeMove|Board|ref|all else|val|x|x|	
 
 ---
 
