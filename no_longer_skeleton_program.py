@@ -179,6 +179,8 @@ def CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
 
 def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
   MoveIsLegal = True
+
+  
   ##if there is no movement then the move is not valid
   if (FinishFile == StartFile) and (FinishRank == StartRank):
     MoveIsLegal = False
@@ -187,6 +189,8 @@ def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseT
   elif not(0 < FinishFile < 9) or not( 0 < FinishRank < 9):
     ## then it move is illegal.
     MoveIsLegal = False
+
+    
   else:
 
     ## get the piece data from the arraay of the target peices
