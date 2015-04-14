@@ -23,6 +23,13 @@ Attempt the **exercises** below.
 
 ---
 1. Attempt to **explain** the purpose of each of the new functions listed above and indicate any **parameters** or **return** values that each of them will require.
+
+|Function|Description|Parameters|Return Value|
+|:------:|-----------|:--------:|------------|
+|`DisplayMainMenu()`|This function invokes the print statements which display the main menu.|N/A|N/A|
+|`GetMainMenuSelection()`|This function takes and validates the user's input when presented with the main menu|N/A|MenuItem|
+|`MakeSelection()`
+
 2. **Write** the function `display_menu()` and add it to the existing program.
 3. **Write** the function `get_menu_selection()` including any **validation** that is necessary and add it to the existing program.
 4. **Write** the function `make_selection()` and add it to the existing program.
