@@ -12,3 +12,4 @@ This series of tasks will help you to prepare.
 Each task sheet below **builds** on the previous one. You **must complete** all of the tasks in each sheet before moving on to the next sheet.
 
 - [Task Sheet 1 - Validation Improvements](COMP1_2015_Task1.md)
+- [Task Sheet 2 - User Interface and Game Improvements](COMP1_2015_Task2.md)
