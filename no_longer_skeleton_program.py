@@ -307,10 +307,8 @@ def CheckWithGisgigir(Board, FinishRank, FinishFile, WhoseTurn):
 
     InCheck = False
 
-    print(opponent+"S")
-
     ##in x axis, from the piece's position to the right hand side
-    for FileCount in range(FinishFile, 9): ##the range function is not inclusive
+    for FileCount in range(FinishFile+1, 9): ##the range function is not inclusive
         if Board[FinishRank][FileCount] == "  ":
             continue
         elif Board[FinishRank][FileCount] == opponent+"S":
@@ -319,16 +317,16 @@ def CheckWithGisgigir(Board, FinishRank, FinishFile, WhoseTurn):
         else:
             break
     ## in x axis, from left to right.
-    for FileCount in range(FinishFile, 0, -1): ##the range function is not inclusive
+    for FileCount in range(FinishFile-1, 0, -1): ##the range function is not inclusive
         if Board[FinishRank][FileCount] == "  ":
             continue
         elif Board[FinishRank][FileCount] == opponent+"S":
             InCheck = True
             return InCheck
-        else:
+        elif Board[FinishRank][FileCount][0] == WhoseTurn:
           break
     ## in the y axis, from up to down
-    for RankCount in range(FinishRank, 9): ##the range function is not inclusive
+    for RankCount in range(FinishRank+1, 9): ##the range function is not inclusive
         if Board[RankCount][FinishFile] == "  ":
             continue
         elif Board[RankCount][FinishFile] == opponent+"S":
@@ -337,7 +335,7 @@ def CheckWithGisgigir(Board, FinishRank, FinishFile, WhoseTurn):
         else:
             break
     ##in y axis, from the other way
-    for RankCount in range(0, FinishRank, -1): ##the range function is not inclusive
+    for RankCount in range(FinishRank-1, 0, -1): ##the range function is not inclusive
         if Board[RankCount][FileCount] == "  ":
             continue
         elif Board[FinishRank][FileCount] == opponent+"S":
