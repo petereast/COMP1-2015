@@ -54,6 +54,25 @@ def GetTypeOfGame():
   TypeOfGame = choice[0].upper()
   return TypeOfGame
 
+def DisplayMainMenu():
+  print("{0}".format("Main Menu"))
+  print()
+  print("1. Play New Game")
+  print("2. Load Existing Game")
+  print("3. Play Sample Game")
+  print("4. View High Scores")
+  print("5. Settings")
+  print("6. Quit Program")
+
+def GetMainMenuSelection():
+  while not ValidSelection:
+    try:
+      Selection = int(input("Please choose an option: "))
+      if not (0 < Selection <= 6):
+        ValidSelection = False
+    except ValueError:
+      ValidSelection = False
+
 def DisplayWinner(WhoseTurn):
   if WhoseTurn == "W":
     print("Black's Sarrum has been captured.  White wins!")
@@ -177,7 +196,7 @@ def CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
     CheckEtluMoveIsLegal = True
   return CheckEtluMoveIsLegal
 
- def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
+def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
   MoveIsLegal = True
 
   
@@ -350,13 +369,16 @@ def CheckWithGisgigir(Board, FinishRank, FinishFile, WhoseTurn):
     
     return InCheck
 
-def CheckSarrumInCheck(Board, FinishRank, FinishFile, WhoseTurn):
+def CheckSarrumInCheck(Board, WhoseTurn, Enemy = False):
     BOARDDIMENTION = 8
-    WhiteTurn = WhoseTurn == "W"
-    if not WhiteTurn:
-        opponent = "W"
+    if not Enemy:
+        WhiteTurn = WhoseTurn == "W"
+        if not WhiteTurn:
+            opponent = "W"
+        else:
+            opponent = "B"
     else:
-        opponent = "B"
+      opponent = WhoseTurn
 
     IsInCheck = False
         
@@ -547,6 +569,10 @@ if __name__ == "__main__":
     ## keep going until the fat lady sings
     while not(GameOver):
       ## NB: This is effectively the start of the turn, this is where I should impliment the `check` function
+      ##      This is also where I shall force the user to continue with the turn until the sarrum is out of check
+      ## When value of WhoseTurn is the current user's turn, this function will check if the opposite players
+      ## sarrum is in check, so in this instance, the players should not be inverted       
+      
       DisplayBoard(Board)
       DisplayWhoseTurnItIs(WhoseTurn)
       MoveIsLegal = False
@@ -567,7 +593,8 @@ if __name__ == "__main__":
 
       
       GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
-      isCheck = CheckSarrumInCheck(Board, FinishRank, FinishFile, WhoseTurn)
+      isCheck = CheckSarrumInCheck(Board, WhoseTurn)
+      
       MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)
       if MoveConfirm:
         MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
