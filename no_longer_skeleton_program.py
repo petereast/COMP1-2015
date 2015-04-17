@@ -65,13 +65,40 @@ def DisplayMainMenu():
   print("6. Quit Program")
 
 def GetMainMenuSelection():
+  ValidSelection = False
   while not ValidSelection:
     try:
       Selection = int(input("Please choose an option: "))
       if not (0 < Selection <= 6):
         ValidSelection = False
+      else:
+        ValidSelection = True
+        break
     except ValueError:
       ValidSelection = False
+    print("That's Invalid")
+  return Selection
+
+def MakeSelection(UsersSelection):
+  if UsersSelection == 1: ## Play new game
+    PlayGame(False) ## False (Param 1) means 'don't play the sample game'
+  elif UsersSelection == 2: ## Load Existing Game
+    ## This is where I'll do the stuff to load an existing game
+    pass
+  elif UsersSelection == 3: ## Play Sample Game
+    PlayGame(True)
+  elif UsersSelection == 4: ## View high Scores
+    
+    pass
+  elif UsersSelection == 5: ## Access Settings
+    
+    pass
+  elif UsersSelection == 6: ## Quit
+    ## Quit the game
+    return True
+  else:
+    print("This isn't a valid menu choice, which shouldn't have gotten to this point")
+  return False
 
 def DisplayWinner(WhoseTurn):
   if WhoseTurn == "W":
@@ -419,7 +446,7 @@ def GetValidBoardPosition(rank, file):
         return True
 
 def InitialiseBoard(Board, SampleGame):
-  if SampleGame == "Y":
+  if SampleGame:
     ## create an empty board
     for RankNo in range(1, BOARDDIMENSION + 1):
       for FileNo in range(1, BOARDDIMENSION + 1):
@@ -544,75 +571,72 @@ def MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
     Board[FinishRank][FinishFile] = Board[StartRank][StartFile]
     Board[StartRank][StartFile] = "  "
 
+def PlayGame(SampleGame, PresetBoard = []):
+  StartSquare = 0 
+  FinishSquare = 0
+  if len(PresetBoard) == 0:
+    Board = CreateBoard()
+    InitialiseBoard(Board, SampleGame)
+  else:
+    Board = PresetBoard
+  
+  ## Do you want to play a game?
+  WhoseTurn = "W"
+  GameOver = False
+
+
+  ## keep going until the fat lady sings
+  while not(GameOver):
+    ## NB: This is effectively the start of the turn, this is where I should impliment the `check` function
+    ##      This is also where I shall force the user to continue with the turn until the sarrum is out of check
+    ## When value of WhoseTurn is the current user's turn, this function will check if the opposite players
+    ## sarrum is in check, so in this instance, the players should not be inverted       
     
+    DisplayBoard(Board)
+    DisplayWhoseTurnItIs(WhoseTurn)
+    MoveIsLegal = False
+    while not(MoveIsLegal):
+
+      StartSquare, FinishSquare = GetMove(StartSquare, FinishSquare)
+      StartRank = StartSquare % 10
+      StartFile = StartSquare // 10
+      FinishRank = FinishSquare % 10
+      FinishFile = FinishSquare // 10
+      ## okay, so rather than dealing with strings, they have chosen to work out which
+      ## character is which mathematically
+      ## again, not a logical choice? Anyone could just put in any number and break it
+      
+      MoveIsLegal = CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+      if not(MoveIsLegal):
+        print("That is not a legal move - please try again")
+
+    
+    GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
+    isCheck = CheckSarrumInCheck(Board, WhoseTurn)
+    
+    MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)
+    if MoveConfirm:
+      MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+    if isCheck:
+      CheckMessage(WhoseTurn)
+    if GameOver:
+      DisplayWinner(WhoseTurn)
+
+    ## swap it's now the other player's turn
+    if WhoseTurn == "W" and MoveConfirm:
+      WhoseTurn = "B"
+    elif WhoseTurn != "W" and MoveConfirm:
+      WhoseTurn = "W"
+    ##else (if MoveConfirm is false)
+      ## Allow the player to continue their turn
+
+      ## this could be done really easily if the turn was kept track of using a bool - the statement could be `WhoseTurn = (not WhoseTurn)`
 
     
 if __name__ == "__main__":
-  Board = CreateBoard() #0th index not used
-  StartSquare = 0 
-  FinishSquare = 0
-  PlayAgain = "Y"
-  while PlayAgain == "Y":
-    ## Do you want to play a game?
-    WhoseTurn = "W"
-    GameOver = False
-    ## uses my nicely validated function
-    SampleGame = GetTypeOfGame()
-    ## rather than doing `IF SampleGame == "y"`etc, they have decided to do something stupid
-    if ord(SampleGame) >= 97 and ord(SampleGame) <= 122:
-      SampleGame = chr(ord(SampleGame) - 32)
-    ## just why? it doesn't do anything actually uesful, it's just bad
-    
-    ## get this party started
-    InitialiseBoard(Board, SampleGame)
-
-    ## keep going until the fat lady sings
-    while not(GameOver):
-      ## NB: This is effectively the start of the turn, this is where I should impliment the `check` function
-      ##      This is also where I shall force the user to continue with the turn until the sarrum is out of check
-      ## When value of WhoseTurn is the current user's turn, this function will check if the opposite players
-      ## sarrum is in check, so in this instance, the players should not be inverted       
-      
-      DisplayBoard(Board)
-      DisplayWhoseTurnItIs(WhoseTurn)
-      MoveIsLegal = False
-      while not(MoveIsLegal):
-
-        StartSquare, FinishSquare = GetMove(StartSquare, FinishSquare)
-        StartRank = StartSquare % 10
-        StartFile = StartSquare // 10
-        FinishRank = FinishSquare % 10
-        FinishFile = FinishSquare // 10
-        ## okay, so rather than dealing with strings, they have chosen to work out which
-        ## character is which mathematically
-        ## again, not a logical choice? Anyone could just put in any number and break it
-        
-        MoveIsLegal = CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
-        if not(MoveIsLegal):
-          print("That is not a legal move - please try again")
-
-      
-      GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
-      isCheck = CheckSarrumInCheck(Board, WhoseTurn)
-      
-      MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)
-      if MoveConfirm:
-        MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
-      if isCheck:
-        CheckMessage(WhoseTurn)
-      if GameOver:
-        DisplayWinner(WhoseTurn)
-
-      ## swap it's now the other player's turn
-      if WhoseTurn == "W" and MoveConfirm:
-        WhoseTurn = "B"
-      elif WhoseTurn != "W" and MoveConfirm:
-        WhoseTurn = "W"
-      ##else (if MoveConfirm is false)
-        ## Allow the player to continue their turn
-
-      ## this could be done really easily if the turn was kept track of using a bool - the statement could be `WhoseTurn = (not WhoseTurn)`
-      
-    PlayAgain = input("Do you want to play again (enter Y for Yes)? ")
-    if ord(PlayAgain) >= 97 and ord(PlayAgain) <= 122:
-      PlayAgain = chr(ord(PlayAgain) - 32)
+  ##Display the menu
+  Quit = False
+  while not Quit:
+    DisplayMainMenu()
+    Choice = GetMainMenuSelection()
+    Quit = MakeSelection(Choice)
