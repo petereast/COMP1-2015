@@ -84,6 +84,13 @@ def MakeSelection(UsersSelection):
     PlayGame(False) ## False (Param 1) means 'don't play the sample game'
   elif UsersSelection == 2: ## Load Existing Game
     ## This is where I'll do the stuff to load an existing game
+    ## Ideas of how to do this:
+    ##    - list the contents of cwd
+    ##    - display all files with the extension that I'm going to use
+    ##    - offer them as a menu
+    ##    = then use pickle.load to get the contents from them
+    ##      - their contents will be a record of a board, number of turns and whose turn it currently is
+    ##      - this will be passed to the playgame function
     pass
   elif UsersSelection == 3: ## Play Sample Game
     PlayGame(True)
