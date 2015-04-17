@@ -107,6 +107,41 @@ def MakeSelection(UsersSelection):
     print("This isn't a valid menu choice, which shouldn't have gotten to this point")
   return False
 
+def DisplayInGameMenu():
+  print()
+  print("In-Game Menu")
+  print("1. Save Game")
+  print("2. Save and Quit")
+  print("3. Just Quit")
+  print()
+
+def GetInGameSeletion():
+  ValidSelection = False
+  while not ValidSelection:
+    try:
+      Selection = int(input("Please choose an option: "))
+      if not (0 < Selection <= 3):
+        ValidSelection = False
+      else:
+        ValidSelection = True
+        break
+    except ValueError:
+      ValidSelection = False
+    print("That's Invalid")
+  return Selection
+
+def MakeInGameSelection(Board, WhoseTurn, NumberOfTurns, Selection):
+  if Selection == 1:
+    print("Saving the Game")
+  elif Selection == 2:
+    print("Saving and quitting the game")
+  elif Selection == 3:
+    print("Quitting the game")
+    return True
+  else:
+    print("I don't know how you've satisified this option")
+  return False
+
 def DisplayWinner(WhoseTurn):
   if WhoseTurn == "W":
     print("Black's Sarrum has been captured.  White wins!")
@@ -509,7 +544,10 @@ def GetMove(StartSquare, FinishSquare):
   while not Valid:
     try:
       StartSquare = int(input("Enter coordinates of square containing piece to move (file first): "))
-      if not (10 < StartSquare < 89):
+      if StartSquare == -1:
+        ## Register Menu Request
+        return 0, 0, True
+      elif not (10 < StartSquare < 89):
         print("Please enter both the rank and file")
       else:
         Valid = True
@@ -521,12 +559,15 @@ def GetMove(StartSquare, FinishSquare):
       FinishSquare = int(input("Enter coordinates of square to move piece to (file first): "))
       if not (10 < FinishSquare < 89):
         print("Please enter a valid input")
+      elif FinishSquare == -1:
+        ## Register Menu Request
+        return 0, 0, True
       else:
         Valid = True
     except ValueError:
       print("Please enter some valid data")
       
-  return StartSquare, FinishSquare
+  return StartSquare, FinishSquare, False
 
 def ConfirmMove(StartSquare, FinishSquare, board): ## Boolean function
   StartCoords = (StartSquare//10, StartSquare%10)
@@ -604,28 +645,42 @@ def PlayGame(SampleGame, PresetBoard = []):
     MoveIsLegal = False
     while not(MoveIsLegal):
 
-      StartSquare, FinishSquare = GetMove(StartSquare, FinishSquare)
-      StartRank = StartSquare % 10
-      StartFile = StartSquare // 10
-      FinishRank = FinishSquare % 10
-      FinishFile = FinishSquare // 10
-      ## okay, so rather than dealing with strings, they have chosen to work out which
-      ## character is which mathematically
-      ## again, not a logical choice? Anyone could just put in any number and break it
+      StartSquare, FinishSquare, isMenuRequest = GetMove(StartSquare, FinishSquare)
+      if not isMenuRequest:
+        StartRank = StartSquare % 10
+        StartFile = StartSquare // 10
+        FinishRank = FinishSquare % 10
+        FinishFile = FinishSquare // 10
+        ## okay, so rather than dealing with strings, they have chosen to work out which
+        ## character is which mathematically
+        ## again, not a logical choice? Anyone could just put in any number and break it
       
-      MoveIsLegal = CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
-      if not(MoveIsLegal):
-        print("That is not a legal move - please try again")
+        MoveIsLegal = CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+        if not(MoveIsLegal):
+          print("That is not a legal move - please try again")
 
     
     GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
     isCheck = CheckSarrumInCheck(Board, WhoseTurn)
-    
-    MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)
+
+    if not isMenuRequest:
+      MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)
+    else:
+      DisplayInGameMenu()
+      Choice = GetInGameSelection()
+      Quit = MakeInGameSelection(Choice)
+      if Quit:
+        return None
+      else:
+        continue
+      
+      
     if MoveConfirm:
       MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+      
     if isCheck:
       CheckMessage(WhoseTurn)
+      
     if GameOver:
       DisplayWinner(WhoseTurn)
 
