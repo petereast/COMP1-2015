@@ -113,6 +113,7 @@ def DisplayInGameMenu():
   print("1. Save Game")
   print("2. Save and Quit")
   print("3. Just Quit")
+  print("4. Surrender")
   print()
 
 def GetInGameSelection():
@@ -120,7 +121,7 @@ def GetInGameSelection():
   while not ValidSelection:
     try:
       Selection = int(input("Please choose an option: "))
-      if not (0 < Selection <= 3):
+      if not (0 < Selection <= 4):
         ValidSelection = False
       else:
         ValidSelection = True
@@ -135,16 +136,24 @@ def MakeInGameSelection(Board, WhoseTurn, NumberOfTurns, Selection):
     print("Saving the Game")
   elif Selection == 2:
     print("Saving and quitting the game")
+    ## call savegame function
   elif Selection == 3:
     print("Quitting the game")
-    return True
+    return True, False
+  elif Selection == 4:
+    print("Surrendering")
+    return False, True
   else:
     print("I don't know how you've satisified this option")
-  return False
+  return False, False
 
-def DisplayWinner(WhoseTurn):
-  if WhoseTurn == "W":
+def DisplayWinner(WhoseTurn, isSurrender):
+  if WhoseTurn == "W" and not isSurrender:
     print("Black's Sarrum has been captured.  White wins!")
+  elif WhoseTurn == "W" and isSurrender:
+    print("White has surrendered! Black wins!")
+  elif WhoseTurn == "B" and isSurrender:
+    print("Black has surrendered! White wins!")
   else:
     print("White's Sarrum has been captured.  Black wins!")
  
@@ -164,8 +173,8 @@ def DisplayBoard(Board):
     print("    +--+--+--+--+--+--+--+--+")
     print("R{0}".format(RankNo), end="  ")
     for FileNo in range(1, BOARDDIMENSION + 1):
-      print("â" + Board[RankNo][FileNo], end="")
-    print("â")
+      print("|" + Board[RankNo][FileNo], end="")
+    print("|")
   print("    +--+--+--+--+--+--+--+--+")
   #print()
   print("     F1 F2 F3 F4 F5 F6 F7 F8")
@@ -253,7 +262,12 @@ def CheckNabuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
 def CheckMarzazPaniMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
   CheckMarzazPaniMoveIsLegal = False
   ## can move either vertically or horizontally
-  if (abs(FinishFile - StartFile) == 1 and abs(FinishRank - StartRank) == 0) or (abs(FinishFile - StartFile) == 0 and abs(FinishRank - StartRank) ==1):
+  #if (abs(FinishFile - StartFile) == 1 and abs(FinishRank - StartRank) == 0) or (abs(FinishFile - StartFile) == 0 and abs(FinishRank - StartRank) ==1): (old code)
+
+  if (abs(FinishFile - StartFile) == 1) or (abs(FinishRank - StartRank) == 1):
+
+    #basically says that it can move one square in any direction
+
     CheckMarzazPaniMoveIsLegal = True
   return CheckMarzazPaniMoveIsLegal
 
@@ -365,6 +379,14 @@ def CheckWithMarzazPani(Board, FinishRank, FinishFile, WhoseTurn):
         InCheck = True
     elif Board[FinishRank-1][FinishFile] == opponent+"S":
         InCheck = True
+    elif Board[FinishRank -1][FinishFile + 1] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank -1][FinishFile - 1] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank +1][FinishFile -1] == opponent+"S":
+        InCheck = True
+    elif Board[FinishRank +1][FinishFile + 1] == opponent+"S":
+        InCheck=True
 
     return InCheck
 
@@ -487,9 +509,8 @@ def GetValidBoardPosition(rank, file):
     else:
         return True
 
-def InitialiseBoard(Board, SampleGame):
-  if SampleGame:
-    ## create an empty board
+def InitializeSampleBoard(Board):
+    ## create a blank board, into an existing list.
     for RankNo in range(1, BOARDDIMENSION + 1):
       for FileNo in range(1, BOARDDIMENSION + 1):
         Board[RankNo][FileNo] = "  "
@@ -502,7 +523,8 @@ def InitialiseBoard(Board, SampleGame):
     Board[3][2] = "BE"
     Board[3][8] = "BE"
     Board[6][8] = "BR"
-  else:
+
+def InitializeNewBoard(Board):
     ##this bit sets up the board for a normal game, with all the peices in
     ##their proper place.
     for RankNo in range(1, BOARDDIMENSION + 1):
@@ -537,6 +559,13 @@ def InitialiseBoard(Board, SampleGame):
             
         else:
           Board[RankNo][FileNo] = "  "    
+
+def InitialiseBoard(Board, SampleGame):
+  if SampleGame:
+    InitializeSampleBoard(Board)
+  else:
+    InitializeNewBoard(Board)
+   
                     
 def GetMove(StartSquare, FinishSquare):
   ## this is going to need validating isn't it?
@@ -636,10 +665,11 @@ def PlayGame(SampleGame, PresetBoard = []):
 
   ## Keep track of thhe number of turns in the game
 
-  NummberOfTurns = 1
+  NumberOfTurns = 1
 
   ## keep going until the fat lady sings
   while not(GameOver):
+    StartRank, FinishRank, StartFile, FinishFile = 0, 0, 0, 0
     ## NB: This is effectively the start of the turn, this is where I should impliment the `check` function
     ##      This is also where I shall force the user to continue with the turn until the sarrum is out of check
     ## When value of WhoseTurn is the current user's turn, this function will check if the opposite players
@@ -659,7 +689,7 @@ def PlayGame(SampleGame, PresetBoard = []):
         FinishFile = FinishSquare // 10
         ## okay, so rather than dealing with strings, they have chosen to work out which
         ## character is which mathematically
-        ## again, not a logical choice? Anyone could just put in any number and break it
+        ## again, not a logical choice? Anyone could just put in any number and break it (unless there's substantial validation)
       
         MoveIsLegal = CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
         if not(MoveIsLegal):
@@ -667,20 +697,24 @@ def PlayGame(SampleGame, PresetBoard = []):
       else: ## If it is a menu request, show the menu the cycle
         DisplayInGameMenu()
         Choice = GetInGameSelection()
-        isQuitting = MakeInGameSelection(Board, WhoseTurn, NumberOfTurns,Choice)
-        if Quit:
+        isQuitting, isSurrendering = MakeInGameSelection(Board, WhoseTurn, NumberOfTurns,Choice)
+        if isQuitting:
+            print()
             return None
+        elif isSurrendering:
+            GameOver = True
+            break
         else:
             continue
 
-    
-    GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
+    if not isSurrendering:
+        GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
     isCheck = CheckSarrumInCheck(Board, WhoseTurn)
 
-    if not isMenuRequest:
-      MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)
+    MoveConfirm = False
 
-      
+    if not isMenuRequest:
+      MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)      
       
     if MoveConfirm:
       MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
@@ -688,8 +722,8 @@ def PlayGame(SampleGame, PresetBoard = []):
     if isCheck:
       CheckMessage(WhoseTurn)
       
-    if GameOver:
-      DisplayWinner(WhoseTurn)
+    if GameOver or isSurrendering:
+      DisplayWinner(WhoseTurn, isSurrendering)
 
     ## swap it's now the other player's turn
     if WhoseTurn == "W" and MoveConfirm:
