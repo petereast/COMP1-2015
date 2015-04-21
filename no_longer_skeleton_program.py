@@ -255,11 +255,13 @@ def CheckGisgigirMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile
 def CheckNabuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
   CheckNabuMoveIsLegal = False
   ## check that the nabu moves diagonally
+  print(abs(FinishFile - StartFile),  abs(FinishRank - StartRank))
   if not(abs(FinishFile - StartFile) == abs(FinishRank - StartRank)):
-    CheckNabuMoveIsLegal = True
+    CheckNabuMoveIsLegal = False
     return CheckNabuMoveIsLegal ##There's no point in continuing with this if it's not even diagonal
   ## Also we need to check if there is anything between the nabu and it's destination
-  for Count in range(0, (FinishFile-StartFile))
+  for Count in range(StartRank, FinishRank):
+      continue
   
   return CheckNabuMoveIsLegal #bool
 
@@ -527,6 +529,7 @@ def InitializeSampleBoard(Board):
     Board[3][2] = "BE"
     Board[3][8] = "BE"
     Board[6][8] = "BR"
+    Board[7][7] = "WN"
 
 def InitializeNewBoard(Board):
     ##this bit sets up the board for a normal game, with all the peices in
