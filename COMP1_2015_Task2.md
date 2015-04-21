@@ -125,6 +125,8 @@ Attempt the **exercises** below.
 
 ---
 1. **Explain** what is meant by the term refactoring and why it is sometimes useful to refactor sections of code.
+
+>Refactoring is when you take the code from a single large function and you convert it into several functions, one for each part of the first function.
 2. **Refactor** the `InitialiseBoard()` function so that there are the three functions identified in the list above.
 
 ---
