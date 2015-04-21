@@ -1,0 +1,102 @@
+#Function Usage in COMP1 2015 Pre-release
+
+##Built-in functions
+
+- `range()`
+- `input()`
+- `print()`
+- `abs()`
+- `int()`
+- `chr()`
+- `ord()`
+- `not()`
+
+##Parameter Passing
+
+- `CreateBoard()`
+    - No Parameters
+    - **return** `Board` (2D List)
+- `DisplayWhoseTurnIsIt(WhoseTurn)`
+    - `WhoseTurn` - (String) by **value**
+    - No return
+- `GetTypeOfGame()`
+    - No parameters
+    - No return
+- `DisplayWinner(WhoseTurn)`
+    - `WhoseTurn` - (String) by **value**
+    - No return
+- `CheckIfGameWillBeWon(Board, FinishRank, FinishFile)`
+    - `Board` - (2D List) by **reference**
+    - `FinishRank` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - **return** `True` or `False`
+- `DisplayBoard(Board)`
+    - `Board` - (2D List) by **reference**
+    - No return
+- `CheckRedumMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, ColourOfPiece)`
+    - `Board` - (2D List) by **reference**
+    - `StartRank` - (Integer) by **value**
+    - `StartFile` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - `ColourOfPiece` - (String) by **value**
+    - **return** `CheckRedumMoveIsLegal` (Boolean)
+- `CheckSarrumMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)`
+    - `Board` - (2D List) by **reference**
+    - `StartRank` - (Integer) by **value**
+    - `StartFile` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - **return** `CheckSarrumMoveIsLegal` (Boolean)
+- `CheckGisgigirMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)`
+    - `Board` - (2D List) by **reference**
+    - `StartRank` - (Integer) by **value**
+    - `StartFile` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - **return** `GisgigirMoveIsLegal` (Boolean)
+- `CheckNabuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)`
+    - `Board` - (2D List) by **reference**
+    - `StartRank` - (Integer) by **value**
+    - `StartFile` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - **return** `CheckNabuMoveIsLegal` (Boolean)
+- `CheckMarzazPaniMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)`
+    - `Board` - (2D List) by **reference**
+    - `StartRank` - (Integer) by **value**
+    - `StartFile` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - **return** `CheckMarzazPaniMoveIsLegal` (Boolean)
+- `CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)`
+    - `Board` - (2D List) by **reference**
+    - `StartRank` - (Integer) by **value**
+    - `StartFile` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - **return** `CheckEtluMoveIsLegal` (Boolean)
+- `CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)`
+    - `Board` - (2D List) by **reference**
+    - `StartRank` - (Integer) by **value**
+    - `StartFile` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - `WhoseTurn` - (String) by **value**
+    - **return** `MoveIsLegal` (Boolean)
+- `InitialiseBoard(Board, SampleGame)`
+    - `Board` - (2D List) by **reference**
+    - `SampleGame` - (Boolean) by **value**
+    - No return
+- `GetMove(StartSquare, FinishSquare)`
+    - `StartSquare` - (Integer) by **value**
+    - `FinishSquare` - (Integer) by **value**
+    - **return** `StartSquare, FinishSquare` (Integer)
+- `MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)`
+    - `Board` - (2D List) by **reference**
+    - `StartRank` - (Integer) by **value**
+    - `StartFile` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - `FinishRank` - (Integer) by **value**
+    - `WhoseTurn` - (String) by **value**
+    - No return
