@@ -1,4 +1,4 @@
-# Skeleton Program code for the AQA COMP1 Summer 2015 examination
+﻿# Skeleton Program code for the AQA COMP1 Summer 2015 examination
 # this code should be used in conjunction with the Preliminary Material
 # written by the AQA COMP1 Programmer Team
 # developed in the Python 3.4 programming environment
@@ -115,7 +115,7 @@ def DisplayInGameMenu():
   print("3. Just Quit")
   print()
 
-def GetInGameSeletion():
+def GetInGameSelection():
   ValidSelection = False
   while not ValidSelection:
     try:
@@ -164,8 +164,8 @@ def DisplayBoard(Board):
     print("    +--+--+--+--+--+--+--+--+")
     print("R{0}".format(RankNo), end="  ")
     for FileNo in range(1, BOARDDIMENSION + 1):
-      print("│" + Board[RankNo][FileNo], end="")
-    print("│")
+      print("â" + Board[RankNo][FileNo], end="")
+    print("â")
   print("    +--+--+--+--+--+--+--+--+")
   #print()
   print("     F1 F2 F3 F4 F5 F6 F7 F8")
@@ -546,7 +546,9 @@ def GetMove(StartSquare, FinishSquare):
       StartSquare = int(input("Enter coordinates of square containing piece to move (file first): "))
       if StartSquare == -1:
         ## Register Menu Request
+        Valid = True
         return 0, 0, True
+        print("So why isn't this returning it's stuff")
       elif not (10 < StartSquare < 89):
         print("Please enter both the rank and file")
       else:
@@ -643,6 +645,7 @@ def PlayGame(SampleGame, PresetBoard = []):
     DisplayBoard(Board)
     DisplayWhoseTurnItIs(WhoseTurn)
     MoveIsLegal = False
+    IsMenuRequest = False
     while not(MoveIsLegal):
 
       StartSquare, FinishSquare, isMenuRequest = GetMove(StartSquare, FinishSquare)
@@ -658,6 +661,14 @@ def PlayGame(SampleGame, PresetBoard = []):
         MoveIsLegal = CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
         if not(MoveIsLegal):
           print("That is not a legal move - please try again")
+      else: ## If it is a menu request, show the menu the cycle
+        DisplayInGameMenu()
+        Choice = GetInGameSelection()
+        isQuitting = MakeInGameSelection(Board, WhoseTurn, NumberOfTurns,Choice)
+        if Quit:
+            return None
+        else:
+            continue
 
     
     GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
@@ -665,14 +676,7 @@ def PlayGame(SampleGame, PresetBoard = []):
 
     if not isMenuRequest:
       MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)
-    else:
-      DisplayInGameMenu()
-      Choice = GetInGameSelection()
-      Quit = MakeInGameSelection(Choice)
-      if Quit:
-        return None
-      else:
-        continue
+
       
       
     if MoveConfirm:
