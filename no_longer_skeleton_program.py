@@ -634,6 +634,9 @@ def PlayGame(SampleGame, PresetBoard = []):
   WhoseTurn = "W"
   GameOver = False
 
+  ## Keep track of thhe number of turns in the game
+
+  NummberOfTurns = 1
 
   ## keep going until the fat lady sings
   while not(GameOver):
@@ -691,8 +694,10 @@ def PlayGame(SampleGame, PresetBoard = []):
     ## swap it's now the other player's turn
     if WhoseTurn == "W" and MoveConfirm:
       WhoseTurn = "B"
+      NumberOfTurns += 1
     elif WhoseTurn != "W" and MoveConfirm:
       WhoseTurn = "W"
+      NumberOfTurns += 1
     ##else (if MoveConfirm is false)
       ## Allow the player to continue their turn
 
