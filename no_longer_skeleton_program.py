@@ -254,9 +254,13 @@ def CheckGisgigirMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile
 
 def CheckNabuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
   CheckNabuMoveIsLegal = False
-  ## check that the nabu moves only one space diagonally
-  if abs(FinishFile - StartFile) == 1 and abs(FinishRank - StartRank) == 1:
+  ## check that the nabu moves diagonally
+  if not(abs(FinishFile - StartFile) == abs(FinishRank - StartRank)):
     CheckNabuMoveIsLegal = True
+    return CheckNabuMoveIsLegal ##There's no point in continuing with this if it's not even diagonal
+  ## Also we need to check if there is anything between the nabu and it's destination
+  for Count in range(0, (FinishFile-StartFile))
+  
   return CheckNabuMoveIsLegal #bool
 
 def CheckMarzazPaniMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
@@ -680,6 +684,8 @@ def PlayGame(SampleGame, PresetBoard = []):
     MoveIsLegal = False
     IsMenuRequest = False
     while not(MoveIsLegal):
+      isSurrendering = False
+      isQuitting = False
 
       StartSquare, FinishSquare, isMenuRequest = GetMove(StartSquare, FinishSquare)
       if not isMenuRequest:
