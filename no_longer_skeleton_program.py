@@ -15,6 +15,20 @@
 
 BOARDDIMENSION = 8
 
+def vrange(start, end): ## A function that finds all of the integers between two numbers, regardless of if one is greater than the other
+    print("vrange",start, end)
+    if start < end:
+        print("start < end")
+        return range(start, end+1)
+    elif start > end:
+        print("start > end")
+        print(list(range(start, end, -1)))
+        return range(end, start+1, -1)
+    else:
+        print("Errornous :(")
+        return range(0, -1)
+
+
 def CreateBoard():
   Board = []
   for Count in range(BOARDDIMENSION + 1):
@@ -253,15 +267,17 @@ def CheckGisgigirMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile
   return GisgigirMoveIsLegal #bool
 
 def CheckNabuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
-  CheckNabuMoveIsLegal = False
+  CheckNabuMoveIsLegal = True
   ## check that the nabu moves diagonally
   print(abs(FinishFile - StartFile),  abs(FinishRank - StartRank))
   if not(abs(FinishFile - StartFile) == abs(FinishRank - StartRank)):
     CheckNabuMoveIsLegal = False
-    return CheckNabuMoveIsLegal ##There's no point in continuing with this if it's not even diagonal
+    #return CheckNabuMoveIsLegal ##There's no point in continuing with this if it's not even diagonal
   ## Also we need to check if there is anything between the nabu and it's destination
-  for Count in range(StartRank, FinishRank):
-      continue
+  print(StartFile, FinishFile)
+  for Count in vrange(StartFile, FinishFile):
+      print("test")
+      print(Board[Count][Count])
   
   return CheckNabuMoveIsLegal #bool
 
@@ -530,6 +546,7 @@ def InitializeSampleBoard(Board):
     Board[3][8] = "BE"
     Board[6][8] = "BR"
     Board[7][7] = "WN"
+    Board[5][5] = "BR"
 
 def InitializeNewBoard(Board):
     ##this bit sets up the board for a normal game, with all the peices in
