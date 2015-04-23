@@ -279,7 +279,7 @@ def CheckNabuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
   for CountFile, CountRank in zip(vrange(StartFile, FinishFile), vrange(StartRank, FinishRank)):
       CheckPiece = Board[CountRank][CountFile]
       if CheckPiece != "  " and ((CountFile != StartFile and CountRank != StartRank) and (CountRank != FinishRank and CountFile != FinishFile)):
-          print(CheckPiece != "  ", (CountFile != StartFile and CountRank != StartRank), (CountRank != FinishRank and CountFile != FinishFile))
+          #print(CheckPiece != "  ", (CountFile != StartFile and CountRank != StartRank), (CountRank != FinishRank and CountFile != FinishFile))
           CheckNabuMoveIsLegal = False
   return CheckNabuMoveIsLegal #bool
 
