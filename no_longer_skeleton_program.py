@@ -217,8 +217,6 @@ def CheckRedumMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, C
             CheckRedumMoveIsLegal = True
        elif FinishRank == StartRank + 2 and StartRank == 2 and FinishFile == StartFile and Board[FinishRank][FinishFile] == "  ":
             CheckRedumMoveIsLegal = True
-        
-
       
   return CheckRedumMoveIsLegal
 
@@ -597,10 +595,16 @@ def InitializeNewBoard(Board):
             Board[RankNo][FileNo] = Board[RankNo][FileNo] + "N"
             
           elif FileNo == 4:
-            Board[RankNo][FileNo] = Board[RankNo][FileNo] + "M"
+            if RankNo == 1:
+                Board[RankNo][FileNo] = Board[RankNo][FileNo] + "M"
+            elif RankNo == 8:
+                Board[RankNo][FileNo] += "S"
             
           elif FileNo == 5:
-            Board[RankNo][FileNo] = Board[RankNo][FileNo] + "S"
+            if RankNo == 1:
+                Board[RankNo][FileNo] = Board[RankNo][FileNo] + "S"
+            elif RankNo == 8:
+                Board[RankNo][FileNo] += "M"
             
         else:
           Board[RankNo][FileNo] = "  "    
