@@ -18,12 +18,13 @@ BOARDDIMENSION = 8
 def vrange(start, end): ## A function that finds all of the integers between two numbers, regardless of if one is greater than the other
     print("vrange",start, end)
     if start < end:
-        print("start < end")
+        #print("start < end")
+        #print(list(range(start, end)))
         return range(start, end+1)
     elif start > end:
-        print("start > end")
-        print(list(range(start, end, -1)))
-        return range(end, start+1, -1)
+        #print("start > end")
+        #print(list(range(start, end, -1)))
+        return range(start, end, -1)
     else:
         print("Errornous :(")
         return range(0, -1)
@@ -48,10 +49,10 @@ def GetPieceName(Rank, File, Board):
   ### print("[DEBUG]", Rank, File, '"'+Board[Rank][File]+'"')
   
   ShortHandColour = Board[File][Rank][0]
-  EnglishColours = {"B":"Black", "W":"White", " ":""}
+  EnglishColours = {"B":"Black", "W":"White", " ":"Empty"}
   FullColour = EnglishColours[ShortHandColour]
 
-  PieceNames = {"S":"Sarrum", "E":"Eltu", "R":"Redum", "M":"Marzaz pani", "G":"Gisigir", "N":"Nabu", " ":"Empty"}
+  PieceNames = {"S":"Sarrum", "E":"Eltu", "R":"Redum", "M":"Marzaz pani", "G":"Gisigir", "N":"Nabu", " ":"Space"}
   ShortHandName = Board[File][Rank][1]
   FullName = PieceNames[ShortHandName]
 
@@ -275,10 +276,11 @@ def CheckNabuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
     #return CheckNabuMoveIsLegal ##There's no point in continuing with this if it's not even diagonal
   ## Also we need to check if there is anything between the nabu and it's destination
   print(StartFile, FinishFile)
-  for Count in vrange(StartFile, FinishFile):
-      print("test")
-      print(Board[Count][Count])
-  
+  for CountFile, CountRank in zip(vrange(StartFile, FinishFile), vrange(StartRank, FinishRank)):
+      CheckPiece = Board[CountRank][CountFile]
+      if CheckPiece != "  " and ((CountFile != StartFile and CountRank != StartRank) and (CountRank != FinishRank and CountFile != FinishFile)):
+          print(CheckPiece != "  ", (CountFile != StartFile and CountRank != StartRank), (CountRank != FinishRank and CountFile != FinishFile))
+          CheckNabuMoveIsLegal = False
   return CheckNabuMoveIsLegal #bool
 
 def CheckMarzazPaniMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
@@ -545,8 +547,8 @@ def InitializeSampleBoard(Board):
     Board[3][2] = "BE"
     Board[3][8] = "BE"
     Board[6][8] = "BR"
-    Board[7][7] = "WN"
-    Board[5][5] = "BR"
+    Board[3][6] = "WN"
+    Board[4][5] = "BR"
 
 def InitializeNewBoard(Board):
     ##this bit sets up the board for a normal game, with all the peices in
