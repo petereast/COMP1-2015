@@ -350,8 +350,8 @@ def CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
   move_one_y = abs(FinishRank - StartRank) == 1
   move_one_x = abs(FinishFile - StartFile) == 1
   ## debug code:
-  print("2x, 2y, 1x, 1y")
-  print(move_two_x, move_two_y, move_one_x, move_one_y)
+  #print("2x, 2y, 1x, 1y")
+  #print(move_two_x, move_two_y, move_one_x, move_one_y)
   ## end of debug code
 
 
