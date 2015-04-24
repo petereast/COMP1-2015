@@ -54,7 +54,7 @@ def GetPieceName(Rank, File, Board):
   EnglishColours = {"B":"Black", "W":"White", " ":"Empty"}
   FullColour = EnglishColours[ShortHandColour]
 
-  PieceNames = {"S":"Sarrum", "E":"Eltu", "R":"Redum", "M":"Marzaz pani", "G":"Gisigir", "N":"Nabu", " ":"Space"}
+  PieceNames = {"S":"Sarrum", "E":"Eltu", "R":"Redum", "M":"Marzaz pani", "G":"Gisigir", "N":"Nabu", " ":"Space", "K":"Kashshaptu"}
   ShortHandName = Board[File][Rank][1]
   FullName = PieceNames[ShortHandName]
 
@@ -364,11 +364,11 @@ def CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
 
 def CheckKashshaptuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
     KisLegal = CheckRedumMoveIsLegal(Board, StartRank, StartFile, StartRank, FinishRank, WhoseTurn)
-    KisLegal += CheckMarzazPaniMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
-    KisLegal += CheckGisgigirMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
-    KisLegal += CheckNabuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
-    KisLegal += CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
-
+    KisLegal += CheckMarzazPaniMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)
+    KisLegal += CheckGisgigirMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)
+    KisLegal += CheckNabuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)
+    KisLegal += CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)
+    
     return bool(KisLegal)
 
 def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
