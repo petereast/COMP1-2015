@@ -13,10 +13,12 @@
 
 ### three for anything else
 
+KashshaptuEnabled = False
+
 BOARDDIMENSION = 8
 
 def vrange(start, end): ## A function that finds all of the integers between two numbers, regardless of if one is greater than the other
-    print("vrange",start, end)
+    #print("vrange",start, end)
     if start < end:
         #print("start < end")
         #print(list(range(start, end)))
@@ -26,7 +28,7 @@ def vrange(start, end): ## A function that finds all of the integers between two
         #print(list(range(start, end, -1)))
         return range(start, end, -1)
     else:
-        print("Errornous :(")
+        #print("Errornous :(")
         return range(0, -1)
 
 
@@ -161,6 +163,27 @@ def MakeInGameSelection(Board, WhoseTurn, NumberOfTurns, Selection):
   else:
     print("I don't know how you've satisified this option")
   return False, False
+
+def DisplaySettingsMenu():
+    print()
+    print("Settings")
+    print()
+    print("1. Enable Kashshaptu")
+    print("0. Exit")
+    print()
+
+def GetUserInputForSettings():
+    ValidSelection = False
+    while not ValidSelection:
+        try:
+            choice = int(input("Please enter your choice: "))
+            if -1 < choice <= 1:
+                ValidSelection = True
+            else:
+                print("Invalid Selection")
+        except ValueError:
+            print("Invalid Selection")
+    return choice
 
 def DisplayWinner(WhoseTurn, isSurrender):
   if WhoseTurn == "W" and not isSurrender:
@@ -655,9 +678,14 @@ def ConfirmMove(StartSquare, FinishSquare, board): ## Boolean function
         
 
 def MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
+  global KashshaptuEnabled
   if WhoseTurn == "W" and FinishRank == 1 and Board[StartRank][StartFile][1] == "R":
     ## White Redum becomes a Marzaz Pani
-    Board[FinishRank][FinishFile] = "WM"
+    if KashshaptuEnabled:
+        Board[FinishRank][FinishFile] = "WK"
+        KashshaptuEnabled = False ##Only happens once per game
+    else:
+        Board[FinishRank][FinishFile] = "WM"
     Board[StartRank][StartFile] = "  "
     print("White Redum Promoted")
   elif WhoseTurn == "B" and FinishRank == 8 and Board[StartRank][StartFile][1] == "R":
