@@ -49,6 +49,8 @@ Attempt the **exercises** below.
 ---
 1. **Add** the necessary functions to the program so that the settings menu shown above is added to the game. **Ensure** that the value indicating whether the Kashshaptu is on or off is easily accessible by all the other functions in the program.
 2. **Identify** the function responsible for promoting the Redum piece.
+> The function responsible for promoting the Redum Piece is `MakeMove()`
+
 3. **Make** any necessary changes to the function identified in question 2 so that the Redum can be promoted to a Kashshaptu **if** the option to use this piece has been turned on.
 4. **Ensure** that the correct piece name is displayed when the Redum is promoted and make any improvements required to do so.
 5. The Kashshaptu piece can move as if it were any of the other pieces, except the Sarrum. **Write** a function that will check to make sure the Kashshaptu move is legal. In addition, make any other improvements necessary to ensure that a Kashshaptu move is recognised correctly.
