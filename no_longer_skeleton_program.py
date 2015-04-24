@@ -115,6 +115,9 @@ def MakeSelection(UsersSelection):
     
     pass
   elif UsersSelection == 5: ## Access Settings
+    DisplaySettingsMenu()
+    choice = GetUserInputForSettings()
+    ActOnUserSettingsChoice(choice)
     
     pass
   elif UsersSelection == 6: ## Quit
@@ -165,10 +168,14 @@ def MakeInGameSelection(Board, WhoseTurn, NumberOfTurns, Selection):
   return False, False
 
 def DisplaySettingsMenu():
+    global KashshaptuEnabled
     print()
     print("Settings")
     print()
-    print("1. Enable Kashshaptu")
+    word = "Enable"
+    if KashshaptuEnabled:
+        word = "Disable"
+    print("1. {0} Kashshaptu".format(word))
     print("0. Exit")
     print()
 
@@ -184,6 +191,11 @@ def GetUserInputForSettings():
         except ValueError:
             print("Invalid Selection")
     return choice
+
+def ActOnUserSettingsChoice(choice):
+    global KashshaptuEnabled
+    if choice == 1:
+        KashshaptuEnabled = not KashshaptuEnabled
 
 def DisplayWinner(WhoseTurn, isSurrender):
   if WhoseTurn == "W" and not isSurrender:
@@ -238,8 +250,8 @@ def CheckRedumMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, C
             CheckRedumMoveIsLegal = True
        elif abs(FinishFile - StartFile) == 1 and Board[FinishRank][FinishFile][0] == "W":
             CheckRedumMoveIsLegal = True
-       elif FinishRank == StartRank + 2 and StartRank == 2 and FinishFile == StartFile and Board[FinishRank][FinishFile] == "  ":
-            CheckRedumMoveIsLegal = True
+    elif FinishRank == StartRank + 2 and StartRank == 2 and FinishFile == StartFile and Board[FinishRank][FinishFile] == "  ":
+        CheckRedumMoveIsLegal = True
       
   return CheckRedumMoveIsLegal
 
@@ -327,14 +339,17 @@ def CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
   ## can move exactly 2 in any direction
   ## does not take into account the fact it cannot jump spaces
   ## forget that
-  ## can now move in an L shape, C# vector2(2,1)
+  ## can now move in an L shape, `C# vector2(2,1)`
   ## it can also jump over other peices.
   move_two_y = abs(FinishRank - StartRank) == 2
   move_two_x = abs(FinishFile - FinishFile) == 2
   move_one_y = abs(FinishRank - StartRank) == 1
   move_one_x = abs(FinishFile - StartFile) == 1
-  print("2x, 2y, 1x, 1y")
-  print(move_two_x, move_two_y, move_one_x, move_one_y)
+  ## debug code:
+  #print("2x, 2y, 1x, 1y")
+  #print(move_two_x, move_two_y, move_one_x, move_one_y)
+  ## end of debug code
+
 
   move_L_up = move_two_y and move_one_x
   move_L_side = move_two_x and move_one_y
@@ -688,9 +703,9 @@ def ConfirmMove(StartSquare, FinishSquare, board): ## Boolean function
   ##    2: Endcoords
   ##    3: The type and colour of the piece in that square (If applicable)
 
-  Response = input("Enter Y or N").lower()
+  Response = input("Enter Y or N\n>>> ").lower()
   while Response not in ["yes", "y", "n", "no"]:
-    Response= input("Please enter something valid").lower()
+    Response= input("Please enter something valid\n(Enter Y or N)\n>>> ").lower()
 
   if Response == "y":
     print("Move confirmed")
