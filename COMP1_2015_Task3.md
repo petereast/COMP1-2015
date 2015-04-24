@@ -18,7 +18,11 @@ Attempt the **exercises** below.
 
 ---
 1. **Identify** the function responsible for positioning the Sarrum and Marzaz Pani pieces during the setup of the board.
+>The function responsible is `InitializeNewBoard(Board)`
+
 2. **Make** the neccessary changes to this function so that the setup positioning reflects the screenshot above.
+ 
+
 ---
 
 ##Task 22 - Kashshaptu
