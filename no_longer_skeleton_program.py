@@ -195,7 +195,11 @@ def GetUserInputForSettings():
 def ActOnUserSettingsChoice(choice):
     global KashshaptuEnabled
     if choice == 1:
+        word = "Enabled"
+        if KashshaptuEnabled:
+            word = "Disabled"
         KashshaptuEnabled = not KashshaptuEnabled
+        print("Kashshaptu {0}".format(word))
 
 def DisplayWinner(WhoseTurn, isSurrender):
   if WhoseTurn == "W" and not isSurrender:
@@ -358,6 +362,15 @@ def CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile):
     CheckEtluMoveIsLegal = True
   return CheckEtluMoveIsLegal
 
+def CheckKashshaptuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
+    KisLegal = CheckRedumMoveIsLegal(Board, StartRank, StartFile, StartRank, FinishRank, WhoseTurn)
+    KisLegal += CheckMarzazPaniMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+    KisLegal += CheckGisgigirMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+    KisLegal += CheckNabuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+    KisLegal += CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+
+    return bool(KisLegal)
+
 def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
   MoveIsLegal = True
 
@@ -405,6 +418,8 @@ def CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseT
         MoveIsLegal = CheckNabuMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)
       elif PieceType == "E":
         MoveIsLegal = CheckEtluMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile)
+      elif PieceType == "K":
+        MoveIsLegal = CheckKashshaptuMoveIsLegal(Board,StartRank,StartFile,FinishRank,FinishFile, PieceColour)
   return MoveIsLegal
 
 def CheckWithRedum(Board, FinishRank, FinishFile, WhoseTurn):
