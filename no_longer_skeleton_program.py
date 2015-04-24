@@ -3,7 +3,8 @@
 # written by the AQA COMP1 Programmer Team
 # developed in the Python 3.4 programming environment
 
-
+import pickle
+from datetime import date, timedelta
 
 ###How I do my stuff:
 
@@ -16,6 +17,15 @@
 KashshaptuEnabled = False
 
 BOARDDIMENSION = 8
+
+Scores = []
+
+class Score():
+    def __init__(self, Name="", NumberOfTurns = -1, Date = None, Colour = None):
+        self.Name = Name
+        self.NumberOfTurns = NumberOfTurns
+        self.Date = Date
+        self.Colour = Colour
 
 def vrange(start, end): ## A function that finds all of the integers between two numbers, regardless of if one is greater than the other
     #print("vrange",start, end)
@@ -96,9 +106,9 @@ def GetMainMenuSelection():
     print("That's Invalid")
   return Selection
 
-def MakeSelection(UsersSelection):
+def MakeSelection(UsersSelection, Scores):
   if UsersSelection == 1: ## Play new game
-    PlayGame(False) ## False (Param 1) means 'don't play the sample game'
+    PlayGame(False, Scores) ## False (Param 1) means 'don't play the sample game'
   elif UsersSelection == 2: ## Load Existing Game
     ## This is where I'll do the stuff to load an existing game
     ## Ideas of how to do this:
@@ -110,8 +120,10 @@ def MakeSelection(UsersSelection):
     ##      - this will be passed to the playgame function
     pass
   elif UsersSelection == 3: ## Play Sample Game
-    PlayGame(True)
+    PlayGame(True, Scores)
   elif UsersSelection == 4: ## View high Scores
+    for score in Scores:
+        print(score.Name, score.NumberOfTurns, score.Date)
     
     pass
   elif UsersSelection == 5: ## Access Settings
@@ -757,7 +769,7 @@ def MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
     Board[FinishRank][FinishFile] = Board[StartRank][StartFile]
     Board[StartRank][StartFile] = "  "
 
-def PlayGame(SampleGame, PresetBoard = []):
+def PlayGame(SampleGame, Scores, PresetBoard = []):
   StartSquare = 0 
   FinishSquare = 0
   if len(PresetBoard) == 0:
@@ -835,16 +847,32 @@ def PlayGame(SampleGame, PresetBoard = []):
       DisplayWinner(WhoseTurn, isSurrendering)
 
     ## swap it's now the other player's turn
-    if WhoseTurn == "W" and MoveConfirm:
+    if WhoseTurn == "W" and MoveConfirm and not GameOver:
       WhoseTurn = "B"
       NumberOfTurns += 1
-    elif WhoseTurn != "W" and MoveConfirm:
+    elif WhoseTurn != "W" and MoveConfirm and not GameOver:
       WhoseTurn = "W"
       NumberOfTurns += 1
     ##else (if MoveConfirm is false)
       ## Allow the player to continue their turn
 
       ## this could be done really easily if the turn was kept track of using a bool - the statement could be `WhoseTurn = (not WhoseTurn)`
+  print("Do you want to save this score?")
+  choice = ""
+  while choice not in ["Y", "N", "YES", "NO"]:
+      choice = input("Enter wither [Y]es or [N]o: ").upper()
+  if choice[0] == "Y":
+      print("Please enter your name:")
+      name = ''
+      while name == '':
+          name = input(">>> ")
+      #GET NAME
+      #GET DATE
+      thisDate = date.strftime(date.today(), "%d/%m/%y")
+      #CREATE RECORD FOR THE SCORE
+      thisScore = Score(name, NumberOfTurns, thisDate, WhoseTurn)
+      #STORE THAT RECORD IN A LIST
+      Scores.append(thisScore)
 
     
 if __name__ == "__main__":
@@ -853,4 +881,4 @@ if __name__ == "__main__":
   while not Quit:
     DisplayMainMenu()
     Choice = GetMainMenuSelection()
-    Quit = MakeSelection(Choice)
+    Quit = MakeSelection(Choice, Scores)
