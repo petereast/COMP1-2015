@@ -56,6 +56,14 @@ Attempt the **exercises** below.
 5. The Kashshaptu piece can move as if it were any of the other pieces, except the Sarrum. **Write** a function that will check to make sure the Kashshaptu move is legal. In addition, make any other improvements necessary to ensure that a Kashshaptu move is recognised correctly.
 6. If you completed **Question 10** in **Task Sheet 1** you might want to ensure that the game detects when a Kashshaptu has been used to place a Sarrum in check. This exercise is **optional**.
 7. Write a **test plan** to ensure that the Kashshaptu functionality works as intended.
+
+###Test plan for Kashshaptu functionality
+1. Test it's movement as a redum
+2. Test it's movement as an Etlu
+3. Test it's movement as a Gigisigir
+4. It would be easier to find where it can't move to
+
+
 ---
 
 ##Task 23 - Hall of Fame
