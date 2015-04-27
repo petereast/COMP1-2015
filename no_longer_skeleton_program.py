@@ -27,6 +27,20 @@ class Score():
         self.Date = Date
         self.Colour = Colour
 
+def SaveScore(Scores):
+    try:
+        with binary_file as open("scores.dat", "w"):
+            pickle.dump(Scores)
+    except:
+        print("Unable to save scores data")
+
+def LoadScore(Scores):
+    try:
+        with binary_file as open("scores.dat", "r"):
+            Scores = pickle.load(binary_file)
+    except:
+        print("Unable to load scores data")
+
 def vrange(start, end): ## A function that finds all of the integers between two numbers, regardless of if one is greater than the other
     #print("vrange",start, end)
     if start < end:
@@ -857,6 +871,8 @@ def PlayGame(SampleGame, Scores, PresetBoard = []):
       ## Allow the player to continue their turn
 
       ## this could be done really easily if the turn was kept track of using a bool - the statement could be `WhoseTurn = (not WhoseTurn)`
+
+  ## This next bit should be a seperate function.
   print("Do you want to save this score?")
   choice = ""
   while choice not in ["Y", "N", "YES", "NO"]:
@@ -873,6 +889,9 @@ def PlayGame(SampleGame, Scores, PresetBoard = []):
       thisScore = Score(name, NumberOfTurns, thisDate, WhoseTurn)
       #STORE THAT RECORD IN A LIST
       Scores.append(thisScore)
+      #UPDATE THE SCORES FILE
+      SaveScores(Scores)    
+
 
     
 if __name__ == "__main__":
