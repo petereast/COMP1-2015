@@ -174,18 +174,23 @@ def MakeSelection(UsersSelection, Scores):
         while not ValidChoice:
             try:
                 choice = int(input(">>> "))
-                if choice in list(range(len(UseableFiles))):
+                if choice in list(range(len(UseableFiles)+1)):
                     ValidChoice = True
+                else:
+                    print("Invalid Choice")
             except:
                 ValidChoice = False
+                print("Invalid Choice")
         CurrentFileName = UseableFiles[choice-1]
+
+        print("you have chosen: {0}".format(CurrentFileName))
 
         ## Create new game object
 
         thisGame = GameState()
         thisGame.LoadGameState(CurrentFileName)
 
-        PlayGame(False, Scores, thisGame.Board) ##Add the parameters for the things
+        PlayGame(False, Scores, thisGame.Board, thisGame.WhoseTurn) ##Add the parameters for the things
     else:
         print("Couldn't find any games :(")
     
@@ -257,8 +262,20 @@ def MakeInGameSelection(Board, WhoseTurn, NumberOfTurns, Selection):
     print("Saving and quitting the game")
     ## Create a game object
     thisGame = GameState(Board, NumberOfTurns, WhoseTurn, KashshaptuEnabled)
-    thisGame.SaveGameState("game.cts")
+    ## would it be worth finding a file name which doesn't already exist
+    ## I think so
+    FileCount = 0
+    SpaceFound = False
+    while not SpaceFound:
+        try:
+            open("game{0}.cts".format(FileCount))
+            FileCount += 1
+        except FileNotFoundError:
+            SpaceFound = True
+        
+    thisGame.SaveGameState("game{0}.cts".format(FileCount))
     print("Game saved")
+    return True, False
   elif Selection == 3:
     print("Quitting the game")
     return True, False
@@ -851,7 +868,7 @@ def MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
   else:
     ###DisplayBoard(Board)
     ##Enrty point for the code to inform the user what piece they've just taken
-    PieceColour, PieceType = GetPieceName(FinishRank, FinishFile, Board)
+    PieceColour, PieceType = GetPieceName(FinishFile, FinishRank, Board)
     ###print("[DEBUG]", '"'+Board[FinishRank][FinishFile]+'"')
     #if Board[FinishFile][FinishRank] != "  ":
     print("You've just taken a {0} {1}".format(PieceColour, PieceType))
@@ -859,7 +876,7 @@ def MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
     Board[FinishRank][FinishFile] = Board[StartRank][StartFile]
     Board[StartRank][StartFile] = "  "
 
-def PlayGame(SampleGame, Scores, PresetBoard = []):
+def PlayGame(SampleGame, Scores, PresetBoard = [], WhoseTurn="W"):
   StartSquare = 0 
   FinishSquare = 0
   if len(PresetBoard) == 0:
@@ -869,7 +886,6 @@ def PlayGame(SampleGame, Scores, PresetBoard = []):
     Board = PresetBoard
   
   ## Do you want to play a game?
-  WhoseTurn = "W"
   GameOver = False
 
   ## Keep track of thhe number of turns in the game
