@@ -136,11 +136,11 @@ Attempt the **exercises** below.
 
     |Number|Data Description|
     |------|----------------|
-    |1| |
-    |2| |
-    |3| |
-    |4| |
-    |5| |
+    |1|Board (All the peices and positions) |
+    |2|Whether or not the Kashshaptu is enabled  |
+    |3|The number of turns taken in the game |
+    |4|Who's turn it is currently |
+    |5|If the sarrum is in check (*this can be evaluated 'live'*) |
     |6| |
     |7| |
 
