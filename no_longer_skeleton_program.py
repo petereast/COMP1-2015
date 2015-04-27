@@ -160,6 +160,7 @@ def MakeSelection(UsersSelection, Scores):
     ##    = then use pickle.load to get the contents from them
     ##      - their contents will be a record of a board, number of turns and whose turn it currently is
     ##      - this will be passed to the playgame function
+    ## EDIT: I have now done this, and it feels good.
     UseableFiles = []
     for file in os.listdir(os.getcwd()):
         if file[-4:] == ".cts":
