@@ -3,7 +3,7 @@
 # written by the AQA COMP1 Programmer Team
 # developed in the Python 3.4 programming environment
 
-import pickle
+import pickle, os
 from datetime import date, timedelta
 
 ###How I do my stuff:
@@ -27,19 +27,47 @@ class Score():
         self.Date = Date
         self.Colour = Colour
 
-def SaveScore(Scores):
-    try:
-        with binary_file as open("scores.dat", "w"):
-            pickle.dump(Scores)
-    except:
-        print("Unable to save scores data")
+## Define a record for a state of a game:
+class GameState():
+    def __init__(self, Board=[], NumberOfTurns = 0, WhoseTurn = "NA", KashshaptuEnabled = False):
+        self.Board = Board
+        self.NumberOfTurns = NumberOfTurns
+        self.WhoseTurn = WhoseTurn
+        self.KashshaptuEnabled = KashshaptuEnabled
+    def SaveGameState(self, filename):
+        try:
+            with open(filename, "wb") as binary_file:
+                pickle.dump(self, binary_file)
+        except IOError:
+            print("Error Saving game :(")
+    def LoadGameState(this, filename):
+        try:
+            with open(filename, "rb") as binary_file:
+                tempGame = pickle.load(binary_file)
+                this.Board = tempGame.Board
+                this.NumberofTurns = tempGame.NumberOfTurns
+                this.WhoseTurn = tempGame.WhoseTurn
+                this.KashshaptuEnabled = tempGame.KashshaptuEnabled
+                return True
+        except FileNotFoundError:
+            print("Error loading game file, file not found :(")
+            return False
 
-def LoadScore(Scores):
+def SaveScoresToFile(Scores):
     try:
-        with binary_file as open("scores.dat", "r"):
+        with open("scores.dat", "wb") as binary_file:
+            pickle.dump(Scores, binary_file)
+    except FileNotFoundError:
+        print("Unable to save scores data: File not found")
+
+def LoadScoresFromFile(Scores):
+    try:
+        with open("scores.dat", "rb") as binary_file:
             Scores = pickle.load(binary_file)
-    except:
-        print("Unable to load scores data")
+            print("[INFO] Successfully loaded {0} records from file".format(len(Scores)))
+            return Scores
+    except FileNotFoundError:
+        print("[WARNING] Unable to load scores data: file not found")
 
 def vrange(start, end): ## A function that finds all of the integers between two numbers, regardless of if one is greater than the other
     #print("vrange",start, end)
@@ -132,12 +160,45 @@ def MakeSelection(UsersSelection, Scores):
     ##    = then use pickle.load to get the contents from them
     ##      - their contents will be a record of a board, number of turns and whose turn it currently is
     ##      - this will be passed to the playgame function
+    UseableFiles = []
+    for file in os.listdir(os.getcwd()):
+        if file[-4:] == ".cts":
+            UseableFiles.append(file)
+    
+    if len(UseableFiles) != 0:
+        print("Found {0} game files in this directory".format(len(UseableFiles)))
+        for index, file in enumerate(UseableFiles):
+            print("{0}.\t{1}".format(index+1, file))
+        print("Please select a file:")
+        ValidChoice = False
+        while not ValidChoice:
+            try:
+                choice = int(input(">>> "))
+                if choice in list(range(len(UseableFiles))):
+                    ValidChoice = True
+            except:
+                ValidChoice = False
+        CurrentFileName = UseableFiles[choice-1]
+
+        ## Create new game object
+
+        thisGame = GameState()
+        thisGame.LoadGameState(CurrentFileName)
+
+        PlayGame(False, Scores, thisGame.Board) ##Add the parameters for the things
+    else:
+        print("Couldn't find any games :(")
+    
     pass
   elif UsersSelection == 3: ## Play Sample Game
     PlayGame(True, Scores)
   elif UsersSelection == 4: ## View high Scores
-    for score in Scores:
-        print(score.Name, score.NumberOfTurns, score.Date)
+    ## Use A function to display the table of high scores
+    print()
+    print()
+    DisplayHighScores(Scores)
+    print()
+    print()
     
     pass
   elif UsersSelection == 5: ## Access Settings
@@ -152,6 +213,13 @@ def MakeSelection(UsersSelection, Scores):
   else:
     print("This isn't a valid menu choice, which shouldn't have gotten to this point")
   return False
+
+def DisplayHighScores(Scores):
+    print("|{0:^{5}}|{1:^{5}}|{2:^{5}}|{3:^{5}}|".format("Name", "Number Of Turns", "Date", "Colour","", 15))
+    print("-"*len("|{0:^{5}}|{1:^{5}}|{2:^{5}}|{3:^{5}}|".format("Name", "Number Of Turns", "Date", "Colour","", 15)))
+    for Score in Scores:
+        print("|{0:^{5}}|{1:^{5}}|{2:^{5}}|{3:^{5}}|".format(Score.Name, Score.NumberOfTurns, Score.Date, Score.Colour,"", 15))
+        print("-"*len("|{0:^{5}}|{1:^{5}}|{2:^{5}}|{3:^{5}}|".format("Name", "Number Of Turns", "Date", "Colour","", 15)))
 
 def DisplayInGameMenu():
   print()
@@ -178,11 +246,19 @@ def GetInGameSelection():
   return Selection
 
 def MakeInGameSelection(Board, WhoseTurn, NumberOfTurns, Selection):
+  global KashshaptuEnabled
   if Selection == 1:
     print("Saving the Game")
+    ## Create a game object
+    thisGame = GameState(Board, NumberOfTurns, WhoseTurn, KashshaptuEnabled)
+    thisGame.SaveGameState("game.cts")
+    print("Game saved")
   elif Selection == 2:
     print("Saving and quitting the game")
-    ## call savegame function
+    ## Create a game object
+    thisGame = GameState(Board, NumberOfTurns, WhoseTurn, KashshaptuEnabled)
+    thisGame.SaveGameState("game.cts")
+    print("Game saved")
   elif Selection == 3:
     print("Quitting the game")
     return True, False
@@ -872,7 +948,7 @@ def PlayGame(SampleGame, Scores, PresetBoard = []):
 
       ## this could be done really easily if the turn was kept track of using a bool - the statement could be `WhoseTurn = (not WhoseTurn)`
 
-  ## This next bit should be a seperate function.
+  ## This next bit should be a seperate function. 
   print("Do you want to save this score?")
   choice = ""
   while choice not in ["Y", "N", "YES", "NO"]:
@@ -890,13 +966,15 @@ def PlayGame(SampleGame, Scores, PresetBoard = []):
       #STORE THAT RECORD IN A LIST
       Scores.append(thisScore)
       #UPDATE THE SCORES FILE
-      SaveScores(Scores)    
+      SaveScoresToFile(Scores)    
 
 
     
 if __name__ == "__main__":
   ##Display the menu
   Quit = False
+  ## Load the scores data from the file
+  Scores = LoadScoresFromFile(Scores)
   while not Quit:
     DisplayMainMenu()
     Choice = GetMainMenuSelection()
