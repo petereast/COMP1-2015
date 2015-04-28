@@ -40,6 +40,7 @@ class GameState():
                 pickle.dump(self, binary_file)
         except IOError:
             print("Error Saving game :(")
+
     def LoadGameState(this, filename):
         try:
             with open(filename, "rb") as binary_file:
@@ -170,28 +171,32 @@ def MakeSelection(UsersSelection, Scores):
         print("Found {0} game files in this directory".format(len(UseableFiles)))
         for index, file in enumerate(UseableFiles):
             print("{0}.\t{1}".format(index+1, file))
-        print("Please select a file:")
+        print("Please select a file (enter -1 to cancel)gith:")
         ValidChoice = False
         while not ValidChoice:
             try:
                 choice = int(input(">>> "))
-                if choice in list(range(len(UseableFiles)+1)):
+                if choice in list(range(len(UseableFiles)+1)) or choice == -1:
                     ValidChoice = True
                 else:
                     print("Invalid Choice")
             except:
                 ValidChoice = False
                 print("Invalid Choice")
-        CurrentFileName = UseableFiles[choice-1]
+        
 
-        print("you have chosen: {0}".format(CurrentFileName))
+        if choice != -1:
+            CurrentFileName = UseableFiles[choice-1]
+            print("you have chosen: {0}".format(CurrentFileName))
 
-        ## Create new game object
+            ## Create new game object
 
-        thisGame = GameState()
-        thisGame.LoadGameState(CurrentFileName)
+            thisGame = GameState()
+            thisGame.LoadGameState(CurrentFileName)
 
-        PlayGame(False, Scores, thisGame.Board, thisGame.WhoseTurn) ##Add the parameters for the things
+            PlayGame(False, Scores, thisGame.Board, thisGame.WhoseTurn) ##Add the parameters for the things
+        else:
+            print("Cancelled!")
     else:
         print("Couldn't find any games :(")
     
@@ -221,9 +226,25 @@ def MakeSelection(UsersSelection, Scores):
   return False
 
 def DisplayHighScores(Scores):
+    ##Sort the high scores using bubble sort :( (I don't like bubble sort)
+
+    ScoresSorted = False
+    ScoresLength = len(Scores)
+    while not ScoresSorted:
+        index, swaps = 1, 0
+        ScoresSorted = True
+        while index < ScoresLength:
+            if Scores[index-1].NumberOfTurns > Scores[index].NumberOfTurns:
+                ##Swap
+                tmp = Scores[index-1]
+                Scores[index-1] = Scores[index]
+                Scores[index] = tmp
+            index += 1
+        ScoresLength -= 1
+    
     print("|{0:^{5}}|{1:^{5}}|{2:^{5}}|{3:^{5}}|".format("Name", "Number Of Turns", "Date", "Colour","", 15))
     print("-"*len("|{0:^{5}}|{1:^{5}}|{2:^{5}}|{3:^{5}}|".format("Name", "Number Of Turns", "Date", "Colour","", 15)))
-    for Score in Scores:
+    for Score in Scores[:3]:
         print("|{0:^{5}}|{1:^{5}}|{2:^{5}}|{3:^{5}}|".format(Score.Name, Score.NumberOfTurns, Score.Date, Score.Colour,"", 15))
         print("-"*len("|{0:^{5}}|{1:^{5}}|{2:^{5}}|{3:^{5}}|".format("Name", "Number Of Turns", "Date", "Colour","", 15)))
 
@@ -878,112 +899,120 @@ def MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn):
     Board[StartRank][StartFile] = "  "
 
 def PlayGame(SampleGame, Scores, PresetBoard = [], WhoseTurn="W"):
-  StartSquare = 0 
-  FinishSquare = 0
-  if len(PresetBoard) == 0:
-    Board = CreateBoard()
-    InitialiseBoard(Board, SampleGame)
-  else:
-    Board = PresetBoard
-  
-  ## Do you want to play a game?
-  GameOver = False
-
-  ## Keep track of thhe number of turns in the game
-
-  NumberOfTurns = 1
-
-  ## keep going until the fat lady sings
-  while not(GameOver):
-    StartRank, FinishRank, StartFile, FinishFile = 0, 0, 0, 0
-    ## NB: This is effectively the start of the turn, this is where I should impliment the `check` function
-    ##      This is also where I shall force the user to continue with the turn until the sarrum is out of check
-    ## When value of WhoseTurn is the current user's turn, this function will check if the opposite players
-    ## sarrum is in check, so in this instance, the players should not be inverted       
-    
-    DisplayBoard(Board)
-    DisplayWhoseTurnItIs(WhoseTurn)
-    MoveIsLegal = False
-    IsMenuRequest = False
-    while not(MoveIsLegal):
-      isSurrendering = False
-      isQuitting = False
-
-      StartSquare, FinishSquare, isMenuRequest = GetMove(StartSquare, FinishSquare)
-      if not isMenuRequest:
-        StartRank = StartSquare % 10
-        StartFile = StartSquare // 10
-        FinishRank = FinishSquare % 10
-        FinishFile = FinishSquare // 10
-        ## okay, so rather than dealing with strings, they have chosen to work out which
-        ## character is which mathematically
-        ## again, not a logical choice? Anyone could just put in any number and break it (unless there's substantial validation)
+    try:
+      StartSquare = 0 
+      FinishSquare = 0
+      if len(PresetBoard) == 0:
+        Board = CreateBoard()
+        InitialiseBoard(Board, SampleGame)
+      else:
+        Board = PresetBoard
       
-        MoveIsLegal = CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
-        if not(MoveIsLegal):
-          print("That is not a legal move - please try again")
-      else: ## If it is a menu request, show the menu the cycle
-        DisplayInGameMenu()
-        Choice = GetInGameSelection()
-        isQuitting, isSurrendering = MakeInGameSelection(Board, WhoseTurn, NumberOfTurns,Choice)
-        if isQuitting:
-            print()
-            return None
-        elif isSurrendering:
-            GameOver = True
-            break
-        else:
-            continue
+      ## Do you want to play a game?
+      GameOver = False
 
-    if not isSurrendering:
-        GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
-    isCheck = CheckSarrumInCheck(Board, WhoseTurn)
+      ## Keep track of thhe number of turns in the game
 
-    MoveConfirm = False
+      NumberOfTurns = 1
 
-    if not isMenuRequest:
-      MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)      
-      
-    if MoveConfirm:
-      MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
-      
-    if isCheck:
-      CheckMessage(WhoseTurn)
-      
-    if GameOver or isSurrendering:
-      DisplayWinner(WhoseTurn, isSurrendering)
+      ## keep going until the fat lady sings
+      while not(GameOver):
+        StartRank, FinishRank, StartFile, FinishFile = 0, 0, 0, 0
+        ## NB: This is effectively the start of the turn, this is where I should impliment the `check` function
+        ##      This is also where I shall force the user to continue with the turn until the sarrum is out of check
+        ## When value of WhoseTurn is the current user's turn, this function will check if the opposite players
+        ## sarrum is in check, so in this instance, the players should not be inverted       
+        
+        DisplayBoard(Board)
+        DisplayWhoseTurnItIs(WhoseTurn)
+        MoveIsLegal = False
+        IsMenuRequest = False
+        while not(MoveIsLegal):
+          isSurrendering = False
+          isQuitting = False
 
-    ## swap it's now the other player's turn
-    if WhoseTurn == "W" and MoveConfirm and not GameOver:
-      WhoseTurn = "B"
-      NumberOfTurns += 1
-    elif WhoseTurn != "W" and MoveConfirm and not GameOver:
-      WhoseTurn = "W"
-      NumberOfTurns += 1
-    ##else (if MoveConfirm is false)
-      ## Allow the player to continue their turn
+          StartSquare, FinishSquare, isMenuRequest = GetMove(StartSquare, FinishSquare)
+          if not isMenuRequest:
+            StartRank = StartSquare % 10
+            StartFile = StartSquare // 10
+            FinishRank = FinishSquare % 10
+            FinishFile = FinishSquare // 10
+            ## okay, so rather than dealing with strings, they have chosen to work out which
+            ## character is which mathematically
+            ## again, not a logical choice? Anyone could just put in any number and break it (unless there's substantial validation)
+          
+            MoveIsLegal = CheckMoveIsLegal(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+            if not(MoveIsLegal):
+              print("That is not a legal move - please try again")
+          else: ## If it is a menu request, show the menu the cycle
+            DisplayInGameMenu()
+            Choice = GetInGameSelection()
+            isQuitting, isSurrendering = MakeInGameSelection(Board, WhoseTurn, NumberOfTurns,Choice)
+            if isQuitting:
+                print()
+                return None
+            elif isSurrendering:
+                GameOver = True
+                break
+            else:
+                continue
 
-      ## this could be done really easily if the turn was kept track of using a bool - the statement could be `WhoseTurn = (not WhoseTurn)`
+        if not isSurrendering:
+            GameOver = CheckIfGameWillBeWon(Board, FinishRank, FinishFile)
+        isCheck = CheckSarrumInCheck(Board, WhoseTurn)
 
-  ## This next bit should be a seperate function. 
-  print("Do you want to save this score?")
-  choice = ""
-  while choice not in ["Y", "N", "YES", "NO"]:
-      choice = input("Enter wither [Y]es or [N]o: ").upper()
-  if choice[0] == "Y":
-      print("Please enter your name:")
-      name = ''
-      while name == '':
-          name = input(">>> ")
-      #GET NAME
-      #GET DATE
-      thisDate = date.strftime(date.today(), "%d/%m/%y")
-      #CREATE RECORD FOR THE SCORE
-      thisScore = Score(name, NumberOfTurns, thisDate, WhoseTurn)
-      #STORE THAT RECORD IN A LIST
-      Scores.append(thisScore)
-      #UPDATE THE SCORES FILE
-      SaveScoresToFile(Scores)    
+        MoveConfirm = False
+
+        if not isMenuRequest:
+          MoveConfirm = ConfirmMove(StartSquare, FinishSquare, Board)      
+          
+        if MoveConfirm:
+          MakeMove(Board, StartRank, StartFile, FinishRank, FinishFile, WhoseTurn)
+          
+        if isCheck:
+          CheckMessage(WhoseTurn)
+          
+        if GameOver or isSurrendering:
+          DisplayWinner(WhoseTurn, isSurrendering)
+
+        ## swap it's now the other player's turn
+        if WhoseTurn == "W" and MoveConfirm and not GameOver:
+          WhoseTurn = "B"
+          NumberOfTurns += 1
+        elif WhoseTurn != "W" and MoveConfirm and not GameOver:
+          WhoseTurn = "W"
+          NumberOfTurns += 1
+        ##else (if MoveConfirm is false)
+          ## Allow the player to continue their turn
+
+          ## this could be done really easily if the turn was kept track of using a bool - the statement could be `WhoseTurn = (not WhoseTurn)`
+
+      ## This next bit should be a seperate function. 
+      print("Do you want to save this score?")
+      choice = ""
+      while choice not in ["Y", "N", "YES", "NO"]:
+          choice = input("Enter wither [Y]es or [N]o: ").upper()
+      if choice[0] == "Y":
+          print("Please enter your name:")
+          name = ''
+          while name == '':
+              name = input(">>> ")
+          #GET NAME
+          #GET DATE
+          thisDate = date.strftime(date.today(), "%d/%m/%y")
+          #CREATE RECORD FOR THE SCORE
+          thisScore = Score(name, NumberOfTurns, thisDate, WhoseTurn)
+          #STORE THAT RECORD IN A LIST
+          Scores.append(thisScore)
+          #UPDATE THE SCORES FILE
+          SaveScoresToFile(Scores)
+    except:
+        print("There has been an error, you are unable to continue\nThe current game is being saved")
+        thisGame = GameState(Board, NumberOfTurns, WhoseTurn, KashshaptuEnabled)
+
+        thisGame.SaveGameState("error_autosave_game.cts")
+
+        return -1
 
 
     
