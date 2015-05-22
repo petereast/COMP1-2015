@@ -1,7 +1,7 @@
 ﻿# Skeleton Program code for the AQA COMP1 Summer 2015 examination
 # this code should be used in conjunction with the Preliminary Material
 # written by the AQA COMP1 Programmer Team
-# developed in the Python 3.4 programming environment
+# developed in the Python 3.4 programming environment, exceptionally poorly
 
 import pickle, os
 from datetime import date, timedelta
